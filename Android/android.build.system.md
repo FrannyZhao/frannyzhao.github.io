@@ -1,9 +1,11 @@
 
-**目录**<br/>
+目录
+--
+
 [与其他编译系统的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#与其他编译系统的比较) <br/>
 [架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#架构)<br/>
 [编译命令](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令)<br/>
-[Android.mk](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk)<br/>
+[Android.mk](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#androidmk)<br/>
 [编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译和安装)<br/>
 
 ----------
@@ -46,7 +48,7 @@ Sequence of load vendor makefiles：
 
 ----------
 
- 编译命令
+编译命令
 --
 
 命令 | 详细说明

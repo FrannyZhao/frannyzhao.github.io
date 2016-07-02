@@ -2,8 +2,8 @@
 **目录**<br/>
 [与其他编译系统的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#与其他编译系统的比较) <br/>
 [架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#架构)<br/>
-[编译命令说明](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令)<br/>
-[Android.mk文件的编写](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk)<br/>
+[编译命令](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令)<br/>
+[Android.mk](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk)<br/>
 [编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译和安装)<br/>
 
 ----------

@@ -2,8 +2,8 @@
 **目录**<br/>
 [与其他编译系统的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#与其他编译系统的比较) <br/>
 [架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#架构)<br/>
-[编译命令说明](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令说明)<br/>
-[Android.mk文件的编写](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk文件的编写)<br/>
+[编译命令说明](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令)<br/>
+[Android.mk文件的编写](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk)<br/>
 [编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译和安装)<br/>
 
 ----------
@@ -41,12 +41,12 @@ Sequence of load vendor makefiles：
   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/load_vendor_makefiles_sequence.png)
 *BoardConfig.mk: 硬件相关的定义。*
 
-了解上面的图一般够用了，如果你还想深入一点可以仔细看下面这个眼花缭乱的大图：
+再深入细节一点可以仔细看下面这个眼花缭乱的大图：
    ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/main.mk.png)
 
 ----------
 
- 编译命令说明
+ 编译命令
 --
 
 命令 | 详细说明
@@ -65,7 +65,7 @@ mma和mmma是从Jellybean4.3开始新加入的命令，比对应的mm和mmm智�
 
 ----------
 
-Android.mk文件的编写
+Android.mk
 --
 Android.mk 文件通常以以下两行代码作为开头：
 ```

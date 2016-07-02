@@ -1,20 +1,23 @@
 
-目录<br/>
-[与其他build system的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#%E4%B8%8E%E5%85%B6%E4%BB%96build%20system%E7%9A%84%E6%AF%94%E8%BE%83)<br/>
-[架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#%E6%9E%B6%E6%9E%84)<br/>
-[编译命令说明](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#%E7%BC%96%E8%AF%91%E5%91%BD%E4%BB%A4%E8%AF%B4%E6%98%8E)<br/>
-[Android.mk 文件的编写](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk%E6%96%87%E4%BB%B6%E7%9A%84%E7%BC%96%E5%86%99)<br/>
-[编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85)<br/>
+**目录**<br/>
+[与其他编译系统的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#与其他编译系统的比较) <br/>
+[架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#架构)<br/>
+[编译命令说明](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令说明)<br/>
+[Android.mk文件的编写](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#Android.mk文件的编写)<br/>
+[编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译和安装)<br/>
 
 ----------
 
-与其他build system的比较
+与其他编译系统的比较
 --
+了解Android build system的为什么这样设计可以读一读 [Recursive Make Considered Harmful](http://aegis.sourceforge.net/auug97.pdf)  和  [build/core/buildsystem.html](http://www.netmite.com/android/mydroid/2.0/build/core/build-system.html)
+
+下面是一些总结：
 
 - 不像linux kernel那样，有一个顶层的makefile会递归地调用子目录的makefiles。
 Android build system用脚本搜索所有的文件夹，直到找到Android.mk文件，并停止继续搜索这个Android.mk文件所在的目录的子目录，除非该Android.mk文件有写`include $(call all-subdir-makefiles)`或者`include $(LOCAL_PATH)/xxx/Android.mk`之类的。
 
-了解Android build system的为什么这样设计可以读一读 [Recursive Make Considered Harmful](http://aegis.sourceforge.net/auug97.pdf)  和  [build/core/buildsystem.html](http://www.netmite.com/android/mydroid/2.0/build/core/build-system.html)
+
 
 One Android.mk == One module， 一个Android.mk对应一个编译模块。
 一共有多少Android.mk呢？在Android 6.0上：
@@ -62,7 +65,7 @@ mma和mmma是从Jellybean4.3开始新加入的命令，比对应的mm和mmm智�
 
 ----------
 
-Android.mk 文件的编写
+Android.mk文件的编写
 --
 Android.mk 文件通常以以下两行代码作为开头：
 ```
@@ -111,7 +114,7 @@ my-dir函数通过`$$(lastword $$(MAKEFILE_LIST))`拿到最后读取的makefile�
 这么一来得到的LOCAL_PATH的值就是错误的值，依赖LOCAL_PATH的其他变量也就更加不可能是正确的了！所以说 ，LOCAL_PATH必须要在任何`including $(CLEAR_VARS))`之前定义 。
 
 ----------
-编译静态库、动态库、apk、签名版apk等的Android.mk要怎么写请看[Android.mk写法实例](http://www.cnblogs.com/hesiming/archive/2011/03/15/1984444.html)。
+编译静态库、动态库、apk、签名版apk等模块的Android.mk要怎么写请看[Android.mk写法实例](http://www.cnblogs.com/hesiming/archive/2011/03/15/1984444.html)。
 
 为了方便模块的编译，Build 系统设置了很多的编译环境变量。要编译一个模块，只要在编译之前根据需要设置这些变量然后执行编译即可。它们包括：
 

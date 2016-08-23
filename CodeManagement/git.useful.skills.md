@@ -38,35 +38,45 @@ git各种命令与状态：
 ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_commands_and_status.png)
 
 想详细了解更多git技能推荐阅读：[Git Community Book 中文版](http://gitbook.liuhui998.com/)
+
 本文挑了最最实用、最最常用的技能，方便大家快速掌握，提高工作效率。
 
 在理解下面的技能前，希望大家先在脑海中形象滴理解下git branch和git commit:
 
 > 把branch理解成一条流水线，把commit理解成乐高积木。
-branch这条流水线是由一个一个commit积木组成的。
 
+> branch这条流水线是由一个一个commit积木组成的。
+ 
+ 
 ----------
 
 更新代码
 --
+
 > 不要用git pull, 改用git fetch + git rebase
 
 因为`git pull`会做`git merge`产生讨厌的merge commit。
 
 **merge commit是什么？**
+
 git中两个branch合并的时候，需要做个标记，这是我们合并的点，就像两根绳子打个结：
 
    ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_pull_biyu.jpg)
-   
+
 这个结就是`git merge`时生成的merge commit。
 
 **merge commit为啥就讨厌了？**
+
 如果是重要的branch合并，我们会需要个merge commit作为见证。就像结婚说誓词时需要个证婚人一样。
+
 但是你平时说话就不需要见证了，不然太累了。
+
 因为你的本地branch根本不重要，跟主线master合并的时候不需要留下见证。
+
 主线只要你的commit并不想要整个branch。
 
 **解决办法**：
+
 ```
     git fetch origin
     git rebase origin/master
@@ -92,8 +102,11 @@ git中两个branch合并的时候，需要做个标记，这是我们合并的�
     git diff
 ```
 git命令都可以加路径来指定文件或者目录，这几个命令也不例外。
+
 比如：
+
 `git status .` 查看当前目录下修改的文件。
+
 `git diff src/java/franny.java` 查看franny.java文件的具体修改。
 
  - **提交**
@@ -103,8 +116,11 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 	git push origin HEAD:refs/for/master
 ```
 `git commit .` 提交当前目录下修改的文件；
+
 `git commit src/java/a.java src/java/b.java` 只提交a.java, b.java这两个文件。
+
 `refs/for` 表示提交到gerrit上，走代码review流程，由有权限的人review过才给你合进代码库。
+
 与其对应的是`refs/heads`和`refs/tags`直接提交进代码库，普通群众是没有这个权限的就不说了。
 
 ----------
@@ -113,10 +129,13 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 --
 
 **常用场景**：
+
 哎呀，我修改了几十个文件还分散个各种不同目录下，其中有一个文件（假设叫a.java）不需要提交咋办，用`git commit file1 file2 file3 ...` 太麻烦。
 
 **解决办法**：
+
 那么就先把a.java还原成未修改的状态： `git checkout src/java/a.java`
+
 然后`git commit -a` 一次性提交全部文件。
 
 ----------
@@ -125,10 +144,166 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 --
 
 **常用场景**：
-哎呀，我的修改提交了3个commit，我想把它们合并成一个commit然后push。
 
-**解决办法**：
-有3种：
+哎呀，我的修改提交了2个commit，我想把它们合并成一个commit然后push。
+
+```
+$ git log
+commit bbb6ca1ddca3b7b59f299c5b9e6bb0c8dc965793
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:10:49 2016 +0800
+
+    this is my 3rd commit
+
+commit 72fa1768fe5db08323394fe1f4a3fb8d71b7c712
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:10:09 2016 +0800
+
+    this is my 2nd commit
+
+commit 87ee65f7ff23afacbbe98c62965b243557e3a3e0
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:09:55 2016 +0800
+
+    this is my 1st commit
+
+```
+即： 我想把后面的2个提交合并成一个提交。
+
+**解决办法有3种**：
+
+ - 第一种办法
+```
+git reset <the 1st commit> 把后面2个提交的文件变成未提交状态
+git add . ; git commit -am "blabla" 把所有为提交的文件一次性提交
+```
+具体执行过程：
+```
+$ git status
+On branch master
+nothing to commit, working directory clean
+```
+```
+$ git reset 87ee65f7ff23afacbbe98c62965b243557e3a3e0
+```
+```
+$ git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	b.java
+	c.java
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+```
+$ git add . ; git commit -am "merge 2 commits together"
+[master 5115542] merge 2 commits together
+ 2 files changed, 24 insertions(+)
+ create mode 100644 src/java/b.java
+ create mode 100644 src/java/c.java
+```
+```
+$ git log
+commit 5115542312503fc0422d48e531d12ee506384cd4
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:16:22 2016 +0800
+
+    merge 2 commits together
+
+commit 87ee65f7ff23afacbbe98c62965b243557e3a3e0
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:09:55 2016 +0800
+
+    this is my 1st commit
+
+```
+ - 第二种办法
+```
+git checkout <the 1st commit>
+git merge --squash <the 2nd commit> <the 3rd commit>
+git commit -a
+```
+具体执行过程：
+```
+$ git checkout 87ee65f7ff23afacbbe98c62965b243557e3a3e0
+Note: checking out '87ee65f7ff23afacbbe98c62965b243557e3a3e0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b new_branch_name
+
+HEAD is now at 87ee65f... this is my first commit
+```
+```
+$ git merge 72fa1768fe5db08323394fe1f4a3fb8d71b7c712 bbb6ca1ddca3b7b59f299c5b9e6bb0c8dc965793 --squash
+Updating 87ee65f..bbb6ca1
+Fast-forward
+Squash commit -- not updating HEAD
+ src/java/b.java | 12 ++++++++++++
+ src/java/c.java | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
+ create mode 100644 src/java/b.java
+ create mode 100644 src/java/c.java
+```
+```
+$ git status
+HEAD detached at 87ee65f
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   b.java
+	new file:   c.java
+```
+```
+$ git commit -a
+[detached HEAD 0212114] Squashed commit of the following:
+ 2 files changed, 24 insertions(+)
+ create mode 100644 src/java/b.java
+ create mode 100644 src/java/c.java
+```
+```
+$ git log
+commit 021211462df14dae5084842b85c0122222dcc453
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:26:32 2016 +0800
+
+    Squashed commit of the following:
+    
+    commit bbb6ca1ddca3b7b59f299c5b9e6bb0c8dc965793
+    Author: Zhao Fengyi <fengyi@zhao.com>
+    Date:   Tue Aug 23 20:10:49 2016 +0800
+    
+        this is my 3rd commit
+    
+    commit 72fa1768fe5db08323394fe1f4a3fb8d71b7c712
+    Author: Zhao Fengyi <fengyi@zhao.com>
+    Date:   Tue Aug 23 20:10:09 2016 +0800
+    
+        this is my 2nd commit
+
+commit 87ee65f7ff23afacbbe98c62965b243557e3a3e0
+Author: Zhao Fengyi <fengyi@zhao.com>
+Date:   Tue Aug 23 20:09:55 2016 +0800
+
+    this is my 1st commit
+
+```
+
+ - 第三种办法（推荐）：
+```
+为某个问题修改了一些文件
+git commit -am "blabla"
+
+为同样的问题又做了些修改
+git commit -a --amend
+```
 
 ----------
 
@@ -136,10 +311,17 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 --
 
 **常用场景**：
+
 这个bug上个版本还没有，这个版本怎么就出现了呢？我得看看上个版本和这个版本之间都改了什么。
 
 **解决办法**：
+```
+git log <branchA/tagA>..<branchB/tagB>
+```
 
+```
+git log <branchA/tagA>..<branchB/tagB> --color --graph --pretty=format:'%Cred%h%Creset -%s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+```
 
 ----------
 
@@ -147,15 +329,19 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 --
 
 **常用场景**：
+
 找到了，就是这行代码改出来的问题，看看谁改的。
 
 **解决办法**：
+
 `git blame`
 
 **高级一点的需求**：
+
 `git blame` 只能看到谁加了这行，如果知道有些代码被删了，想看看谁删了怎么办呢？
 
 **解决办法**：
+
 
 ----------
 
@@ -164,7 +350,10 @@ git命令都可以加路径来指定文件或者目录，这几个命令也不�
 git 这么多命令，敲起来又长又麻烦，一不小心敲错了就更烦了。
 
 **解决办法**：
+
 缩写alias
+
+LF转换
 
 ----------
 

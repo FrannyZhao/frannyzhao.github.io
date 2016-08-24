@@ -30,7 +30,7 @@
  - 快速定位问题；
  - 方便管理多项目；
  - 方便团队合作……
-
+ 
 > git gerrit jenkins三剑客： 灵活，快速，强大，好用。
 
 git各种命令与状态：
@@ -296,7 +296,7 @@ Date:   Tue Aug 23 20:09:55 2016 +0800
 
 ```
 
- - 第三种办法（推荐）：
+ - 第三种办法（防患于未然，推荐）：
 ```
 为某个问题修改了一些文件
 git commit -am "blabla"
@@ -315,12 +315,61 @@ git commit -a --amend
 这个bug上个版本还没有，这个版本怎么就出现了呢？我得看看上个版本和这个版本之间都改了什么。
 
 **解决办法**：
-```
-git log <branchA/tagA>..<branchB/tagB>
-```
+
+ - 粗糙版命令（适用于版本之间提交不多，<10个吧）
 
 ```
-git log <branchA/tagA>..<branchB/tagB> --color --graph --pretty=format:'%Cred%h%Creset -%s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+git log <branchA/tagA/commitA>..<branchB/tagB/commitB> -- <path>
+```
+具体执行过程：
+```
+src/main/java/com/xxx/yyy/ui/activity$ git log origin/v7.7..origin/v7.8 -- .
+commit aaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Author: Y <y@q.com>
+Date:   Tue Aug 23 18:12:33 2016 +0800
+
+    [需求开发]......
+    
+    Change-Id: ......
+
+commit bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+Author: l <l@q.com>
+Date:   Tue Aug 23 15:26:21 2016 +0800
+
+    【bug fixed】......
+
+commit cccccccccccccccccccccccccccccccccccccc
+Author: G <g@q.com>
+Date:   Tue Aug 23 16:32:20 2016 +0800
+
+    需求-从第三方跳入......
+    
+    Change-Id: ......
+
+commit ddddddddddddddddddddddddddddddddddd
+Author: S <s@q.com>
+Date:   Tue Aug 23 10:12:26 2016 +0800
+
+    [功能优化]去掉无用的xxx.java
+    
+    Change-Id: ......
+
+```
+缺点是太多了，排版不紧凑，找个信息要半天。
+
+ - 精致版命令（紧凑，不费眼）
+ 
+```
+git log <branchA/tagA/commitA>..<branchB/tagB/commitB> --color --graph --pretty=format:'%Cred%h%Creset -%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -- <path>
+```
+具体执行过程：
+```
+src/main/java/com/xxx/yyy/ui/activity$ git log origin/v7.7..origin/v7.8 --color --graph --pretty=format:'%Cred%h%Creset -%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -- . 
+
+* a30af7c -[需求开发] ... (16 hours ago) <Y>
+* cacb3f5 -【bug fixed】... (18 hours ago) <l>
+* b332d79 -需求-从第三方跳入... (18 hours ago) <G>
+* 0385105 -[功能优化] 去掉无用的 xxx.java (18 hours ago) <S>
 ```
 
 ----------
@@ -334,7 +383,10 @@ git log <branchA/tagA>..<branchB/tagB> --color --graph --pretty=format:'%Cred%h%
 
 **解决办法**：
 
-`git blame`
+`git blame <file> -L <行数>`
+Android Studio有提供同样的操作：
+
+   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_blame_android_studio.png)
 
 **高级一点的需求**：
 
@@ -342,23 +394,110 @@ git log <branchA/tagA>..<branchB/tagB> --color --graph --pretty=format:'%Cred%h%
 
 **解决办法**：
 
+```
+git log -p -- <file>
+```
+在打印里搜索被删除的行。
+
+具体执行过程：
+```
+src/main/java/com/xxx/yyy/ui/view/message$ git log -p -- LLLView.java
+搜索
+xxxManager\.getyyy\(\)\.play
+```
 
 ----------
 
 方便的配置
 --
+作为一个熟悉git的人，我平时提交代码只需要1行命令就搞定了
+```
+ git f && git rh && git rbm && git sa && git pm
+```
+
+要想操作这么便捷，做一些前期配置就可以一劳永逸了。
+
+ - 缩写alias
+
 git 这么多命令，敲起来又长又麻烦，一不小心敲错了就更烦了。
 
-**解决办法**：
+打开 ~/.gitconfig， 把下面的缩写添加进去
+```
+[alias]
+	co = checkout
+	cp = cherry-pick
+	br = branch
+	st = status
+	l1 = log -1
+	pm = push origin HEAD:refs/for/master
+	ap = apply
+	cm = commit
+	rbm = rebase origin/master
+	f = fetch origin
+	rh = reset --hard
+	sa = stash apply --0
+```
 
-缩写alias
+- 各种平台换行符不一致，git提交时统一转换：
+```
+git config --global core.autocrlf true
+git config --global core.autocrlf true
+```
 
-LF转换
+- 暂存不用提交的修改
+
+比如gradle project sync耗时太久，我改成用本地的服务器：
+```
+distributionUrl=http\://10.x.y.z:8080/download/gradle-2.12-all.zip
+```
+这个修改又不需要提交，只是本地开发时需要。
+
+我们一般把不需要提交的修改用`git stash`暂存在本地；
+
+需要提交的修改`git commit`提交到本地。
+
+这样要提交的修改和不需要提交的修改就分开了，不会出现每次提交代码要自己再分离一次。
+
+
+----------
+
+
+配置好了，git commit了需要提交的代码后，可以一行命令搞定推送到gerrit了。
+```
+ git f && git rh && git rbm && git sa && git pm
+```
+
+命令 | 详细说明
+------------ | -------------
+git f | git fetch origin 从git服务器获取最新代码状态
+git rh | git reset --hard 清空本地不需要提交的代码
+git rbm | git rebase origin/master 把自己的commit合并进master
+git sa | git stash apply --0 恢复暂存的修改
+git pm | git push origin HEAD:refs/for/master 推到gerrit
+
+然后继续开发下一个commit吧～
 
 ----------
 
 其他
 --
+
+有时候会遇到一些棘手的问题。
+
+- 比如：之前`git commit`了一个提交，然后做了一堆`git checkout`或者别的操作导致找不到这个commit了。
+```
+vi .git/logs/HEAD
+或者
+git reflog
+```
+都可以查看你的操作历史。曾经从哪里checkout到哪里，commit了什么，rebase到哪里了...都一目了然。
+
+- 比如：之前解决了一次冲突，然后发现不应该这么解决，想换种办法解决。
+但是git会自动记住你之前的解决办法，自动帮你解决了，你根本没有插手的机会。
+```
+rm -rf .git/rr-cache/*
+```
+让git忘记我之前的解决办法，这样就给了我插手的机会，重新解决一次。
 
 ----------
 

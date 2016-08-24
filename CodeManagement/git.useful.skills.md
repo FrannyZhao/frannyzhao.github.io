@@ -1,7 +1,7 @@
 
 目录
 --
-[为什么用git gerrit jenkins三剑客做代码版本控制](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#为什么用git_gerrit_jenkins三剑客做代码版本控制) <br/>
+[为什么用git+gerrit+jenkins三剑客做代码版本控制](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#为什么用git+gerrit+jenkins三剑客做代码版本控制) <br/>
 [更新代码](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#更新代码)<br/>
 [提交](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#提交)<br/>
 [还原文件](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#还原文件)<br/>
@@ -13,7 +13,7 @@
 
 ----------
 
-为什么用git gerrit jenkins三剑客做代码版本控制
+为什么用git+gerrit+jenkins三剑客做代码版本控制
 --
 
 **烦恼：**
@@ -31,7 +31,7 @@
  - 方便管理多项目；
  - 方便团队合作……
  
-> git gerrit jenkins三剑客： 灵活，快速，强大，好用。
+> git+gerrit+jenkins三剑客： 灵活，快速，强大，好用。
 
 git各种命令与状态：
 

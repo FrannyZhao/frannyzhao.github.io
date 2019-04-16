@@ -1,0 +1,23 @@
+{
+  "name": "frannyzhao.github.io",
+  "version": "1.0.0",
+  "description": "[Franny's Upgrading](https://franny8912.gitbook.io/upgrading/)",
+  "main": "index.js",
+  "dependencies": {
+    "gitbook-plugin-toc": "^0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrannyZhao/frannyzhao.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrannyZhao/frannyzhao.github.io/issues"
+  },
+  "homepage": "https://github.com/FrannyZhao/frannyzhao.github.io#readme"
+}

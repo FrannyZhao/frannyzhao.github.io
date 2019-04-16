@@ -1,15 +1,4 @@
-
-目录
---
-[为什么用git+gerrit+jenkins三剑客做代码版本控制](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#为什么用git+gerrit+jenkins三剑客做代码版本控制) <br/>
-[更新代码](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#更新代码)<br/>
-[提交](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#提交)<br/>
-[还原文件](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#还原文件)<br/>
-[合并多个提交](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#合并多个提交)<br/>
-[找不同版本的区别](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#找不同版本的区别)<br/>
-[这锅该谁背](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#这锅该谁背)<br/>
-[方便的配置](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#方便的配置)<br/>
-[其他](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/CodeManagement/git.useful.skills.md#其他)<br/>
+[TOC]
 
 ----------
 
@@ -30,12 +19,12 @@
  - 快速定位问题；
  - 方便管理多项目；
  - 方便团队合作……
- 
+
 > git+gerrit+jenkins三剑客： 灵活，快速，强大，好用。
 
 git各种命令与状态：
 
-![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_commands_and_status.png)
+![image](./pic/git_commands_and_status.png)
 
 想详细了解更多git技能推荐阅读：[Git Community Book 中文版](http://gitbook.liuhui998.com/)
 
@@ -46,8 +35,7 @@ git各种命令与状态：
 > 把branch理解成一条流水线，把commit理解成乐高积木。
 
 > branch这条流水线是由一个一个commit积木组成的。
- 
- 
+
 ----------
 
 更新代码
@@ -61,7 +49,7 @@ git各种命令与状态：
 
 git中两个branch合并的时候，需要做个标记，这是我们合并的点，就像两根绳子打个结：
 
-   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_pull_biyu.jpg)
+   ![image](./pic/git_pull_biyu.jpg)
 
 这个结就是`git merge`时生成的merge commit。
 
@@ -89,14 +77,14 @@ git中两个branch合并的时候，需要做个标记，这是我们合并的�
  2. 打开这个文件，解决冲突
  3. `git add src/java/a.java` 
  4. `git rebase --continue`
- 
+
 ----------
 
 提交
 --
 
  - **提交前自检**： 过一遍自己刚才改了什么
- 
+
 ```
     git status
     git diff
@@ -358,7 +346,7 @@ Date:   Tue Aug 23 10:12:26 2016 +0800
 缺点是太多了，排版不紧凑，找个信息要半天。
 
  - 精致版命令（紧凑，不费眼）
- 
+
 ```
 git log <branchA/tagA/commitA>..<branchB/tagB/commitB> --color --graph --pretty=format:'%Cred%h%Creset -%s %Cgreen(%cr) %C(bold blue)<%an>%Creset' -- <path>
 ```
@@ -386,7 +374,7 @@ src/main/java/com/xxx/yyy/ui/activity$ git log origin/v7.7..origin/v7.8 --color 
 `git blame <file> -L <行数>`
 Android Studio有提供同样的操作：
 
-   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/CodeManagement/pic/git_blame_android_studio.png)
+   ![image](./pic/git_blame_android_studio.png)
 
 **高级一点的需求**：
 
@@ -457,7 +445,6 @@ distributionUrl=http\://10.x.y.z:8080/download/gradle-2.12-all.zip
 需要提交的修改`git commit`提交到本地。
 
 这样要提交的修改和不需要提交的修改就分开了，不会出现每次提交代码要自己再分离一次。
-
 
 ----------
 

@@ -1,12 +1,4 @@
-
-目录
---
-
-[与其他编译系统的比较](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#与其他编译系统的比较) <br/>
-[架构](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#架构)<br/>
-[编译命令](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译命令)<br/>
-[Android.mk](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#androidmk)<br/>
-[编译和安装](https://github.com/FrannyZhao/FrannyZhao.github.io/blob/master/Android/android.build.system.md#编译和安装)<br/>
+[TOC]
 
 ----------
 
@@ -36,15 +28,16 @@ $ find . -name Android.mk | wc -l
 架构
 --
 
-![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/architecture.png)
+![image](./pic/architecture.png)
+
 
 
 Sequence of load vendor makefiles：
-  ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/load_vendor_makefiles_sequence.png)
+  ![image](./pic/load_vendor_makefiles_sequence.png)
 *BoardConfig.mk: 硬件相关的定义。*
 
 再深入细节一点可以仔细看下面这个眼花缭乱的大图：
-   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/main.mk.png)
+   ![image](./pic/main.mk.png)
 
 ----------
 
@@ -59,7 +52,7 @@ mmm | Builds all of the modules in the supplied directories, but not their depen
 mma | Builds all of the modules in the current directory, and their dependencies.<br/>同mm但会同时编译所依赖的模块。
 mmma | Builds all of the modules in the supplied directories, and their dependencies.<br/>同mmm但会同时编译所依赖的模块。
 文字看晕了的话记住下面这张图就好了：
-   ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/build_commands.png)
+   ![image](./pic/build_commands.png)
 **总结**：
 mma和mmma是从Jellybean4.3开始新加入的命令，比对应的mm和mmm智能多了，不需要当前目录包含Android.mk，会解决依赖问题。
 
@@ -110,9 +103,9 @@ my-dir函数通过`$$(lastword $$(MAKEFILE_LIST))`拿到最后读取的makefile�
 最后要知道gnu make 会自动将所有读取的makefile路径都会加入到MAKEFILE_LIST变量中，而且是按照读取的先后顺序添加。
 
 那么分析开始了，在运行本makefile文件时，`$(MAKEFILE_LIST)`字符串中最后一个makefile肯定是最后读取的makefile，即`$(lastword $(MAKEFILE_LIST))`则会返回`当前路径/Android.mk`，my-dir函数则会得到当前路径。
-  
+
 如果我们在`include $(CLEAR_VARS)`之后，再调用my-dir函数，那么`$$(lastword $$(MAKEFILE_LIST))`肯定就会返回build/core/clear_vars.mk，my-dir函数得到的值就是build/core，而不是当前的路径了。
- 
+
 这么一来得到的LOCAL_PATH的值就是错误的值，依赖LOCAL_PATH的其他变量也就更加不可能是正确的了！所以说 ，LOCAL_PATH必须要在任何`including $(CLEAR_VARS))`之前定义 。
 
 ----------
@@ -152,8 +145,8 @@ module 在单独mmm编译的时候，是可以安装到out中的system对应位�
 但是如果整体的 make -j* 编译系统，那么module就会先生成在out下的**symbols**/system对应的位置，最后会不会打包进系统system.img要看module 的LOCAL_MODULE_TAGS和当前的编译的TARGET_BUILD_VARIANT没有满足下面表格中的规则。
 
  - 三种编译类型TARGET_BUILD_VARIANT与安装模块的规则
- 
- 名称 | 详细说明
+
+名称 | 详细说明
  ------------ | -------------
  eng | 默认类型，该编译类型适用于**开发**阶段。当选择这种类型时，编译结果将：<br/>安装包含 eng, debug标签的模块;<br/>安装所有没有标签的非 APK 模块;<br/>安装所有PRODUCT_PACKAGES宏中指定的 APK 模块;<br/>编译出的系统具有 root 访问权限;<br/>ro.secure=0;<br/>ro.debuggable=1;<br/>ro.kernel.android.checkjni=1;<br/>adb enabled
  userdebug | 该编译类型适合用于 **debug** 阶段。当选择这种类型时，编译结果将：<br/>安装所有带有 debug标签的模块;<br/>安装所有没有标签的非 APK 模块;<br/>安装所有PRODUCT_PACKAGES宏中指定的 APK 模块<br/>编译出的系统具有 root 访问权限;<br/>ro.secure=1;<br/>ro.debuggable=1;<br/>adb enabled
@@ -162,7 +155,7 @@ module 在单独mmm编译的时候，是可以安装到out中的system对应位�
 *odex的作用：系统制作会把.odex 和 apk 一起放到system/app 下，由系统来调度使用，如果想盗版apk，单独copy出去.apk是不能用的，这样可以起到一定程度上的保护作用！*
 
 表格里的文字看晕了的话记住下面这张图就好了：
-    ![image](https://raw.githubusercontent.com/FrannyZhao/FrannyZhao.github.io/master/Android/pic/TARGET_BUILD_VARIANT.png)
+    ![image](./pic/TARGET_BUILD_VARIANT.png)
 
 **总结：**
 这里可以看到对module的安装控制级别最高的是 PRODUCT_PACKAGES 这个变量。

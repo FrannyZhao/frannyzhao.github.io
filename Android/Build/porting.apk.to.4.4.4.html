@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Median of Two Sorted Arrays · Franny's Notebook</title>
+        <title>Porting APK · Franny's Notebook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -85,8 +85,8 @@
     <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="two.sum.html" />
     
+    <link rel="prev" href="android.build.system.html" />
     
 
     </head>
@@ -156,9 +156,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="1.2.1.1" data-path="median.of.two.sorted.arrays.html">
+        <li class="chapter " data-level="1.2.1.1" data-path="../../Algorithms/Array/median.of.two.sorted.arrays.html">
             
-                <a href="median.of.two.sorted.arrays.html">
+                <a href="../../Algorithms/Array/median.of.two.sorted.arrays.html">
             
                     
                     Median of Two Sorted Arrays
@@ -169,9 +169,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.1.2" data-path="two.sum.html">
+        <li class="chapter " data-level="1.2.1.2" data-path="../../Algorithms/Array/two.sum.html">
             
-                <a href="two.sum.html">
+                <a href="../../Algorithms/Array/two.sum.html">
             
                     
                     Two Sum
@@ -201,9 +201,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.2.1" data-path="../Sort/ten.classic.sort.html">
+        <li class="chapter " data-level="1.2.2.1" data-path="../../Algorithms/Sort/ten.classic.sort.html">
             
-                <a href="../Sort/ten.classic.sort.html">
+                <a href="../../Algorithms/Sort/ten.classic.sort.html">
             
                     
                     Ten Classic Sort
@@ -252,9 +252,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1.1" data-path="../../Android/Build/android.build.system.html">
+        <li class="chapter " data-level="1.3.1.1" data-path="android.build.system.html">
             
-                <a href="../../Android/Build/android.build.system.html">
+                <a href="android.build.system.html">
             
                     
                     Build System
@@ -265,9 +265,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.1.2" data-path="../../Android/Build/porting.apk.to.4.4.4.html">
+        <li class="chapter active" data-level="1.3.1.2" data-path="porting.apk.to.4.4.4.html">
             
-                <a href="../../Android/Build/porting.apk.to.4.4.4.html">
+                <a href="porting.apk.to.4.4.4.html">
             
                     
                     Porting APK
@@ -297,9 +297,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.2.1" data-path="../../Android/JNI/jni.html">
+        <li class="chapter " data-level="1.3.2.1" data-path="../JNI/jni.html">
             
-                <a href="../../Android/JNI/jni.html">
+                <a href="../JNI/jni.html">
             
                     
                     JNI
@@ -504,7 +504,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="../.." >Median of Two Sorted Arrays</a>
+        <a href="../.." >Porting APK</a>
     </h1>
 </div>
 
@@ -519,27 +519,45 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <p>[TOC]</p>
-<h1 id="description-median-of-two-sorted-arrays">Description: <a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank">Median of Two Sorted Arrays</a></h1>
-<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
-<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
-<p>You may assume <strong>nums1</strong> and <strong>nums2</strong> cannot be both empty.</p>
-<blockquote>
-<p>&#x4E24;&#x4E2A;&#x5347;&#x5E8F;&#x6392;&#x597D;&#x7684;&#x6570;&#x7EC4;&#xFF0C;&#x5927;&#x5C0F;&#x5206;&#x522B;&#x4E3A;m&#x548C;n&#xFF0C;&#x627E;&#x5230;&#x5B83;&#x4EEC;&#x5408;&#x5728;&#x4E00;&#x8D77;&#x7684;&#x4E2D;&#x4F4D;&#x6570;&#x3002;&#x8981;&#x6C42;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;O(log(m+n))</p>
-</blockquote>
-<p><strong>Example 1:</strong></p>
-<pre><code class="lang-java">nums1 = [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>]
-nums2 = [<span class="hljs-number">2</span>]
-
-The median is <span class="hljs-number">2.0</span>
+                                <h2 id="&#x95EE;&#x9898;&#xFF1A;">&#x95EE;&#x9898;&#xFF1A;</h2>
+<p>MoosLauncher.apk&#x662F;&#x5728;android studio&#x4E2D;&#x5F00;&#x53D1;&#x7684;&#xFF0C;&#x653E;&#x5230;aosp 7.1.2&#x4EE5;&#x53CA;8.1.0&#x4E0A;&#x90FD;&#x53EF;&#x4EE5;&#x7F16;&#x8FC7;&#xFF1A;</p>
+<pre><code class="lang-makefile">file Android.mk: 
+LOCAL_PATH := <span class="hljs-variable">$(call my-dir)</span>
+include $(CLEAR_VARS)
+LOCAL_MODULE := MoosLauncher
+LOCAL_MODULE_TAGS := optional
+LOCAL_DEX_PREOPT:= false
+LOCAL_SRC_FILES := launcher3/build/MoosLauncher.apk
+LOCAL_MODULE_SUFFIX := <span class="hljs-variable">$(COMMON_ANDROID_PACKAGE_SUFFIX)</span>
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_CLASS := APPS
+include $(BUILD_PREBUILT)
 </code></pre>
-<p><strong>Example 2:</strong></p>
-<pre><code class="lang-java">nums1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]
-nums2 = [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
-
-<span class="hljs-function">The median <span class="hljs-title">is</span> <span class="hljs-params">(<span class="hljs-number">2</span> + <span class="hljs-number">3</span>)</span>/2 </span>= <span class="hljs-number">2.5</span>
+<p>&#x4F46;&#x662F;&#x653E;&#x5230;aosp 4.4.4&#x4E0A;&#x51FA;&#x73B0;&#x4E86;&#x62A5;&#x9519;&#xFF0C;out/host/linux-x86/bin/zipalign&#x65E0;&#x6CD5;&#x5BF9;&#x6B64;apk&#x8FDB;&#x884C;&#x4F18;&#x5316;&#xFF1A;</p>
+<p>target Prebuilt APK: MoosLauncher (out/target/product/rk312x/obj/APPS/MoosLauncher_intermediates/MoosLauncher.apk)
+<strong>out/host/linux-x86/bin/zipalign</strong> -f 4 packages/apps/MoosLauncher/launcher3/build/MoosLauncher.apk out/target/product/rk312x/obj/APPS/MoosLauncher_intermediates/MoosLauncher.apk
+build/core/prebuilt.mk:151: recipe for target &apos;out/target/product/rk312x/obj/APPS/MoosLauncher_intermediates/MoosLauncher.apk&apos; failed
+make: <em> </em> <em> [out/target/product/rk312x/obj/APPS/MoosLauncher_intermediates/MoosLauncher.apk] Error 1
+make: </em> <em> </em> Deleting file &apos;out/target/product/rk312x/obj/APPS/MoosLauncher_intermediates/MoosLauncher.apk&apos;</p>
+<p>// todo zipalign &#x4F5C;&#x7528;&#xFF1A;&#x4F18;&#x5316;apk res&#x6587;&#x4EF6;&#xFF0C;&#x5BF9;&#x9F50;&#xFF0C;&#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x52A0;&#x5FEB;</p>
+<h2 id="&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#xFF1A;">&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#xFF1A;</h2>
+<ul>
+<li><p>&#x5B89;&#x5353;4.4.4&#x7248;&#x672C;&#x4E0A;&#x5F03;&#x7528;Android.mk&#xFF0C;&#x6539;&#x7528;PRODUCT_COPY_FILES += packages/apps/MoosLauncher/launcher3/build/MoosLauncher.apk:system/priv-app/MoosLauncher.apk</p>
+</li>
+<li><p>&#x4FEE;&#x6539;build/core/Makefile&#x4E2D;&#x7684;error&#x4E3A;warning:</p>
+</li>
+</ul>
+<pre><code class="lang-makefile">define check-product-copy-files
+$(if $(filter %.apk, $(1)),$(error \
+    Prebuilt apk found in PRODUCT_COPY_FILES: $(1), use BUILD_PREBUILT instead!))
+endef
 </code></pre>
-<h1 id="solutions">Solutions</h1>
+<p>&#x6539;&#x6210;</p>
+<pre><code class="lang-makefile">define check-product-copy-files
+$(if $(filter %.apk, $(1)),$(warning \
+    Prebuilt apk found in PRODUCT_COPY_FILES: $(1), use BUILD_PREBUILT instead!))
+endef
+</code></pre>
 
                                 
                                 </section>
@@ -567,10 +585,10 @@ nums2 = [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
 
             
                 
-                
-                <a href="two.sum.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Two Sum">
-                    <i class="fa fa-angle-right"></i>
+                <a href="android.build.system.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Build System">
+                    <i class="fa fa-angle-left"></i>
                 </a>
+                
                 
             
         
@@ -579,7 +597,7 @@ nums2 = [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Median of Two Sorted Arrays","level":"1.2.1.1","depth":3,"next":{"title":"Two Sum","level":"1.2.1.2","depth":3,"path":"Algorithms/Array/two.sum.md","ref":"Algorithms/Array/two.sum.md","articles":[]},"previous":{"title":"Array","level":"1.2.1","depth":2,"ref":"","articles":[{"title":"Median of Two Sorted Arrays","level":"1.2.1.1","depth":3,"path":"Algorithms/Array/median.of.two.sorted.arrays.md","ref":"Algorithms/Array/median.of.two.sorted.arrays.md","articles":[]},{"title":"Two Sum","level":"1.2.1.2","depth":3,"path":"Algorithms/Array/two.sum.md","ref":"Algorithms/Array/two.sum.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Algorithms/Array/median.of.two.sorted.arrays.md","mtime":"2018-12-22T11:01:45.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-04T03:21:35.949Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Porting APK","level":"1.3.1.2","depth":3,"next":{"title":"JNI","level":"1.3.2","depth":2,"ref":"","articles":[{"title":"JNI","level":"1.3.2.1","depth":3,"path":"Android/JNI/jni.md","ref":"Android/JNI/jni.md","articles":[]}]},"previous":{"title":"Build System","level":"1.3.1.1","depth":3,"path":"Android/Build/android.build.system.md","ref":"Android/Build/android.build.system.md","articles":[]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Android/Build/porting.apk.to.4.4.4.md","mtime":"2019-08-01T07:31:57.141Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-04T03:21:35.949Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

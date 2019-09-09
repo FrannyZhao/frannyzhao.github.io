@@ -529,7 +529,10 @@
                                 <p>[TOC]</p>
 <h1 id="android&#x5F3A;&#x5236;&#x66F4;&#x6539;&#x4E3A;&#x6A2A;&#x5C4F;&#x65B9;&#x6848;">Android&#x5F3A;&#x5236;&#x66F4;&#x6539;&#x4E3A;&#x6A2A;&#x5C4F;&#x65B9;&#x6848;</h1>
 <p>&#x53C2;&#x8003;<a href="https://blog.csdn.net/songjinshi/article/details/50586333" target="_blank">https://blog.csdn.net/songjinshi/article/details/50586333</a></p>
-<p>&#x589E;&#x52A0;&#x4E86;&#x5E94;&#x7528;&#x5C42;&#x7684;&#x4FEE;&#x6539;&#xFF0C;&#x9632;&#x6B62;&#x6709;&#x7684;&#x5E94;&#x7528;&#x5199;&#x4E86;screenOrientation = portrait, &#x6216;&#x8005;request orientation portrait</p>
+<ul>
+<li>&#x589E;&#x52A0;&#x4E86;&#x5E94;&#x7528;&#x5C42;&#x7684;&#x4FEE;&#x6539;&#xFF0C;&#x9632;&#x6B62;&#x6709;&#x7684;&#x5E94;&#x7528;&#x5199;&#x4E86;screenOrientation = portrait, &#x6216;&#x8005;request orientation portrait</li>
+<li>&#x589E;&#x52A0;&#x4E86;recovery&#x663E;&#x793A;&#x7684;&#x65CB;&#x8F6C;</li>
+</ul>
 <h2 id="frameworksnative">frameworks/native</h2>
 <h3 id="surfaceflinger&#x7684;dispalydevice">SurfaceFlinger&#x7684;DispalyDevice</h3>
 <pre><code class="lang-cpp">diff --git a/services/surfaceflinger/DisplayDevice.cpp b/services/surfaceflinger/DisplayDevice.cpp
@@ -661,6 +664,88 @@ index <span class="hljs-number">750</span>bad6..<span class="hljs-number">6</spa
          info.theme = target.info.theme;
          info.softInputMode = target.info.softInputMode;
 </code></pre>
+<h2 id="bootablerecovery">bootable/recovery</h2>
+<h3 id="recovery-ui">recovery UI</h3>
+<pre><code class="lang-cpp">diff --git a/screen_ui.cpp b/screen_ui.cpp
+index b8f6ea2.<span class="hljs-number">.69</span>db797 <span class="hljs-number">100644</span>
+--- a/screen_ui.cpp
++++ b/screen_ui.cpp
+@@ <span class="hljs-number">-170</span>,<span class="hljs-number">8</span> +<span class="hljs-number">170</span>,<span class="hljs-number">8</span> @@ <span class="hljs-keyword">void</span> ScreenRecoveryUI::draw_background_locked() {
+     }
+
+     GRSurface* text_surface = GetCurrentText();
+-    <span class="hljs-keyword">int</span> text_x = (gr_fb_width() - gr_get_width(text_surface)) / <span class="hljs-number">2</span>;
+-    <span class="hljs-keyword">int</span> text_y = GetTextBaseline();
++    <span class="hljs-keyword">int</span> text_x = (gr_fb_width() - gr_get_width(text_surface)) / <span class="hljs-number">3</span>; <span class="hljs-comment">//(gr_fb_width() - gr_get_width(text_surface)) / 2;</span>
++    <span class="hljs-keyword">int</span> text_y = (gr_fb_height() - gr_get_height(text_surface)) / <span class="hljs-number">2</span>; <span class="hljs-comment">//GetTextBaseline();</span>
+     gr_color(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>);
+     gr_texticon(text_x, text_y, text_surface);
+   }
+@@ <span class="hljs-number">-184</span>,<span class="hljs-number">8</span> +<span class="hljs-number">184</span>,<span class="hljs-number">8</span> @@ <span class="hljs-keyword">void</span> ScreenRecoveryUI::draw_foreground_locked() {
+     GRSurface* frame = GetCurrentFrame();
+     <span class="hljs-keyword">int</span> frame_width = gr_get_width(frame);
+     <span class="hljs-keyword">int</span> frame_height = gr_get_height(frame);
+-    <span class="hljs-keyword">int</span> frame_x = (gr_fb_width() - frame_width) / <span class="hljs-number">2</span>;
+-    <span class="hljs-keyword">int</span> frame_y = GetAnimationBaseline();
++    <span class="hljs-keyword">int</span> frame_x = (gr_fb_width() - frame_width) * <span class="hljs-number">2</span> / <span class="hljs-number">3</span>; <span class="hljs-comment">//(gr_fb_width() - frame_width) / 2;</span>
++    <span class="hljs-keyword">int</span> frame_y = (gr_fb_height() - frame_height) / <span class="hljs-number">2</span>; <span class="hljs-comment">//GetAnimationBaseline();</span>
+     gr_blit(frame, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, frame_width, frame_height, frame_x, frame_y);
+   }
+
+@@ <span class="hljs-number">-460</span>,<span class="hljs-number">6</span> +<span class="hljs-number">460</span>,<span class="hljs-number">7</span> @@ <span class="hljs-keyword">void</span> ScreenRecoveryUI::LoadBitmap(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, GRSurface** surface) {
+
+ <span class="hljs-keyword">void</span> ScreenRecoveryUI::LoadLocalizedBitmap(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, GRSurface** surface) {
+   <span class="hljs-keyword">int</span> result = res_create_localized_alpha_surface(filename, locale_.c_str(), surface);
++  RotateSurface(*surface);
+   <span class="hljs-keyword">if</span> (result &lt; <span class="hljs-number">0</span>) {
+     LOG(ERROR) &lt;&lt; <span class="hljs-string">&quot;couldn&apos;t load bitmap &quot;</span> &lt;&lt; filename &lt;&lt; <span class="hljs-string">&quot; (error &quot;</span> &lt;&lt; result &lt;&lt; <span class="hljs-string">&quot;)&quot;</span>;
+   }
+@@ <span class="hljs-number">-841</span>,<span class="hljs-number">3</span> +<span class="hljs-number">842</span>,<span class="hljs-number">29</span> @@ <span class="hljs-keyword">void</span> ScreenRecoveryUI::KeyLongPress(<span class="hljs-keyword">int</span>) {
+   <span class="hljs-comment">// will change color to indicate a successful long press.</span>
+   Redraw();
+ }
++
++<span class="hljs-keyword">void</span> ScreenRecoveryUI::RotateSurface(GRSurface *surface) {
++  <span class="hljs-keyword">if</span> (surface == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>;
++  <span class="hljs-keyword">if</span> (surface-&gt;pixel_bytes != <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span>;
++  <span class="hljs-keyword">int</span> data_size = surface-&gt;height * surface-&gt;row_bytes;
++  <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span>*  src = <span class="hljs-keyword">new</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span>[data_size];
++  <span class="hljs-keyword">if</span> (src == <span class="hljs-literal">NULL</span>) <span class="hljs-keyword">return</span>;
++  <span class="hljs-built_in">memcpy</span>(src, surface-&gt;data, data_size);
++  <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> *dst = surface-&gt;data;
++  <span class="hljs-keyword">int</span> width = surface-&gt;width, height = surface-&gt;height;
++  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; height; j++) {
++    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> *sx = src + j * surface-&gt;row_bytes;
++    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> *px = dst + (height - <span class="hljs-number">1</span> - j) * surface-&gt;pixel_bytes;
++    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; width; i++) {
++      *px = *sx;
++      sx++;
++      px += height;
++    }
++  }
++  surface-&gt;width = height;
++  surface-&gt;height = width;
++  surface-&gt;row_bytes = surface-&gt;pixel_bytes * surface-&gt;width;
++  <span class="hljs-keyword">delete</span> []src;
++  <span class="hljs-keyword">return</span>;
++}
++
+</code></pre>
+<pre><code class="lang-cpp">diff --git a/screen_ui.h b/screen_ui.h
+index <span class="hljs-number">8231</span>a2b.<span class="hljs-number">.6</span>ccd232 <span class="hljs-number">100644</span>
+--- a/screen_ui.h
++++ b/screen_ui.h
+@@ <span class="hljs-number">-191</span>,<span class="hljs-number">6</span> +<span class="hljs-number">191</span>,<span class="hljs-number">9</span> @@ <span class="hljs-keyword">class</span> ScreenRecoveryUI : <span class="hljs-keyword">public</span> RecoveryUI {
+   <span class="hljs-comment">// Similar to DrawTextLines() to draw multiple text lines, but additionally wraps long lines.</span>
+   <span class="hljs-comment">// Returns the offset it should be moving along Y-axis.</span>
+   <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">DrawWrappedTextLines</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* <span class="hljs-keyword">const</span>* lines)</span> <span class="hljs-keyword">const</span></span>;
++
++  <span class="hljs-comment">// Rotate 90 degree</span>
++  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">RotateSurface</span><span class="hljs-params">(GRSurface *)</span></span>;
+ };
+
+ <span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span>  <span class="hljs-comment">// RECOVERY_UI_H</span></span>
+</code></pre>
 
                                 
                                 </section>
@@ -700,7 +785,7 @@ index <span class="hljs-number">750</span>bad6..<span class="hljs-number">6</spa
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Force Landscape","level":"2.2.3.3","depth":3,"next":{"title":"Basic_Knowledge","level":"2.3","depth":1,"ref":"","articles":[{"title":"Shift","level":"2.3.1","depth":2,"path":"Basic_Knowledge/shift.md","ref":"Basic_Knowledge/shift.md","articles":[]}]},"previous":{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Android/WorkExperience/force.landscape.md","mtime":"2019-09-03T08:56:48.983Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-06T12:58:45.671Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Force Landscape","level":"2.2.3.3","depth":3,"next":{"title":"Basic_Knowledge","level":"2.3","depth":1,"ref":"","articles":[{"title":"Shift","level":"2.3.1","depth":2,"path":"Basic_Knowledge/shift.md","ref":"Basic_Knowledge/shift.md","articles":[]}]},"previous":{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Android/WorkExperience/force.landscape.md","mtime":"2019-09-09T10:02:18.592Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-09T10:03:06.279Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

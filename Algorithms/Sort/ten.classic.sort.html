@@ -607,7 +607,7 @@ $$</p>
 <pre><code class="lang-java"><span class="hljs-keyword">import</span> java.util.Arrays;
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SelectionSort</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
-        <span class="hljs-keyword">int</span>[] arr = Arrays.copyof(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
         <span class="hljs-keyword">int</span> min, tmp;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length - <span class="hljs-number">1</span>; i++) {
             min = i;
@@ -661,7 +661,7 @@ $$</p>
                 arr[j] = arr[j - <span class="hljs-number">1</span>];
                 j--;
             }
-            arr[i] = tmp;
+            arr[j] = tmp;
         }
         <span class="hljs-keyword">return</span> arr;
     }
@@ -693,143 +693,533 @@ $$</p>
 </li>
 </ul>
 <h2 id="shell-sort">Shell sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">import</span> java.util.Arrays;
 
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShellSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> gap = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (gap &lt; arr.length) {
+            gap = gap * <span class="hljs-number">3</span> + <span class="hljs-number">1</span>;
+        }
+        <span class="hljs-keyword">while</span> (gap &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = gap; i &lt; arr.length; i++) {
+                <span class="hljs-keyword">int</span> tmp = arr[i];
+                <span class="hljs-keyword">int</span> j = i;
+                <span class="hljs-keyword">while</span> (j &gt;= gap &amp;&amp; tmp &lt; arr[j - gap]) {
+                    arr[j] = arr[j - gap];
+                    j -= gap;
+                }
+                arr[j] = tmp;
+            }
+            gap = (<span class="hljs-keyword">int</span>) Math.floor(gap / <span class="hljs-number">3</span>);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>&#x200B;        while (gap &gt; 0) {
+&#x200B;            for (int i = gap; i &lt; arr.length; i++) {
+&#x200B;                int tmp = arr[i];
+&#x200B;                int j = i;
+&#x200B;                while (j &gt;= gap &amp;&amp; tmp &lt; arr[j - gap]) {
+&#x200B;                    arr[j] = arr[j - gap];
+&#x200B;                    j -= gap;
+&#x200B;                }
+&#x200B;                arr[j] = tmp;
+&#x200B;            }
+&#x200B;            gap = (int) Math.floor(gap / 3);
+&#x200B;        }</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(N^{1.289}) &#x5230; O(2.5NlgN)&#x4E4B;&#x95F4;&#xFF0C;&#x7CBE;&#x786E;&#x7684;&#x6A21;&#x578B;&#x8FD8;&#x6CA1;&#x627E;&#x5230;
 $$</p>
 </li>
-<li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
+<li><p>&#x7A7A;&#x95F4;&#xFF1A;O(1)</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x4E0D;&#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="merge-sort">Merge sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">import</span> java.util.Arrays;
 
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MergeSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">if</span> (arr.length &lt; <span class="hljs-number">2</span>) {
+            <span class="hljs-keyword">return</span> arr;
+        }
+        <span class="hljs-keyword">int</span> middle = (<span class="hljs-keyword">int</span>) Math.floor(arr.length / <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">int</span>[] left = Arrays.copyOfRange(arr, <span class="hljs-number">0</span>, middle);
+        <span class="hljs-keyword">int</span>[] right = Arrays.copyOfRange(arr, middle, arr.length);
+        <span class="hljs-keyword">return</span> merge(sort(left), sort(right));
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] merge(<span class="hljs-keyword">int</span>[] left, <span class="hljs-keyword">int</span>[] right) {
+        <span class="hljs-keyword">int</span>[] result = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[left.length + right.length];
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>, k = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (j &lt; left.length &amp;&amp; k &lt; right.length) {
+            <span class="hljs-keyword">if</span> (left[j] &lt;= right[k]) {
+                result[i++] = left[j++];
+            } <span class="hljs-keyword">else</span> {
+                result[i++] = right[k++];
+            }
+        }
+        <span class="hljs-keyword">while</span>(j &lt; left.length) {
+            result[i++] = left[j++];
+        }
+        <span class="hljs-keyword">while</span>(k &lt; right.length) {
+            result[i++] = right[k++];
+        }
+        <span class="hljs-keyword">return</span> result;
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>&#x200B;        int middle = (int) Math.floor(arr.length / 2);
+&#x200B;        int[] left = Arrays.copyOfRange(arr, 0, middle);
+&#x200B;        int[] right = Arrays.copyOfRange(arr, middle, arr.length);</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(NlgN)
 $$</p>
 </li>
 <li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="quick-sort">Quick sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">import</span> java.util.Arrays;
 
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuickSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">return</span> quickSort(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] quickSort(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end) {
+        <span class="hljs-keyword">if</span> (start &lt; end) {
+<span class="hljs-comment">//            int pivotIndex = partitionSingleSide(arr, start, end);</span>
+            <span class="hljs-keyword">int</span> pivotIndex = partitionDoubleSide(arr, start, end);
+            quickSort(arr, start, pivotIndex - <span class="hljs-number">1</span>);
+            quickSort(arr, pivotIndex + <span class="hljs-number">1</span>, end);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-comment">/**
+     * &#x5355;&#x8FB9;&#x626B;&#x63CF;
+     * <span class="hljs-doctag">@param</span> arr
+     * <span class="hljs-doctag">@param</span> left
+     * <span class="hljs-doctag">@param</span> right
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partitionSingleSide</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end)</span> </span>{
+        <span class="hljs-keyword">int</span> pivotValue = arr[start];
+        <span class="hljs-keyword">int</span> mark = start;
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = mark + <span class="hljs-number">1</span>; i &lt;= end; i++) {
+            <span class="hljs-keyword">if</span> (arr[i] &lt; pivotValue) {
+                mark++;
+                <span class="hljs-keyword">if</span> (mark != i) {
+                    tmp = arr[i];
+                    arr[i] = arr[mark];
+                    arr[mark] = tmp;
+                }
+            }
+        }
+        <span class="hljs-keyword">if</span> (mark != start) {
+            arr[start] = arr[mark];
+            arr[mark] = pivotValue;
+        }
+        <span class="hljs-keyword">return</span> mark;
+    }
+
+    <span class="hljs-comment">/**
+     * &#x53CC;&#x8FB9;&#x626B;&#x63CF;
+     * <span class="hljs-doctag">@param</span> arr
+     * <span class="hljs-doctag">@param</span> left
+     * <span class="hljs-doctag">@param</span> right
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partitionDoubleSide</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end)</span> </span>{
+        <span class="hljs-keyword">int</span> left = start;
+        <span class="hljs-keyword">int</span> right = end;
+        <span class="hljs-keyword">int</span> pivotValue = arr[start];
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">while</span> (left &lt; right) {
+            <span class="hljs-comment">// &#x987A;&#x5E8F;&#x5F88;&#x91CD;&#x8981;&#xFF0C;&#x8981;&#x5148;&#x4ECE;&#x53F3;&#x5F80;&#x5DE6;&#x626B;&#x63CF;</span>
+            <span class="hljs-keyword">while</span> (arr[right] &gt;= pivotValue &amp;&amp; left &lt; right) {
+                right--;
+            }
+            <span class="hljs-comment">// &#x4ECE;&#x5DE6;&#x5F80;&#x53F3;&#x626B;&#x63CF;</span>
+            <span class="hljs-keyword">while</span> (arr[left] &lt;= pivotValue &amp;&amp; left &lt; right) {
+                left++;
+            }
+            <span class="hljs-comment">// &#x4EA4;&#x6362;&#x5DE6;&#x53F3;&#x6570;&#x636E;</span>
+            <span class="hljs-keyword">if</span> (left &lt; right) {
+                tmp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = tmp;
+            }
+        }
+        <span class="hljs-comment">// &#x6B64;&#x65F6;left==right</span>
+        arr[start] = arr[left];
+        arr[left] = pivotValue;
+        <span class="hljs-keyword">return</span> right;
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>&#x53CC;&#x8FB9;&#x626B;&#x63CF;&#xFF1A;&#x5148;&#x4ECE;&#x53F3;&#x5F80;&#x5DE6;&#xFF0C;&#x6700;&#x540E;&#x5BF9;&#x8C03;left&#x548C;start</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(NlgN)
 $$</p>
 </li>
-<li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
+<li><p>&#x7A7A;&#x95F4;&#xFF1A;</p>
+<p>&#x9996;&#x5148;&#x5C31;&#x5730;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#x4F7F;&#x7528;&#x7684;&#x7A7A;&#x95F4;&#x662F;O(1)&#x7684;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x4E2A;&#x5E38;&#x6570;&#x7EA7;&#xFF1B;</p>
+<p>&#x800C;&#x771F;&#x6B63;&#x6D88;&#x8017;&#x7A7A;&#x95F4;&#x7684;&#x5C31;&#x662F;&#x9012;&#x5F52;&#x8C03;&#x7528;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A;&#x6BCF;&#x6B21;&#x9012;&#x5F52;&#x5C31;&#x8981;&#x4FDD;&#x6301;&#x4E00;&#x4E9B;&#x6570;&#x636E;&#xFF1B;</p>
+<ul>
+<li><p>&#x6700;&#x4F18;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x7A7A;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x4E3A;&#xFF1A;O(logn)&#xFF0C;&#x6BCF;&#x4E00;&#x6B21;&#x90FD;&#x5E73;&#x5206;&#x6570;&#x7EC4;&#x7684;&#x60C5;&#x51B5;</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x6700;&#x5DEE;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x7A7A;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x4E3A;&#xFF1A;O(n)&#xFF0C;&#x9000;&#x5316;&#x4E3A;&#x5192;&#x6CE1;&#x6392;&#x5E8F;&#x7684;&#x60C5;&#x51B5;, &#x4F18;&#x5316;&#x70B9;&#x662F;&#x600E;&#x4E48;&#x53D6;&#x54E8;&#x5175;&#x5143;&#x7D20;&#x624D;&#x80FD;&#x4E0D;&#x4F1A;&#x8BA9;&#x8FD9;&#x4E2A;&#x7B97;&#x6CD5;&#x9000;&#x5316;&#x5230;&#x5192;&#x6CE1;&#x6392;&#x5E8F;</p>
+</li>
+</ul>
+</li>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x4E0D;&#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="heap-sort">Heap sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">package</span> sort;
 
+<span class="hljs-keyword">import</span> java.util.Arrays;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeapSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = (<span class="hljs-keyword">int</span>) Math.floor(arr.length / <span class="hljs-number">2</span>); i &gt;= <span class="hljs-number">0</span>; i--) {
+            heapify(arr, i, arr.length);
+        }
+        <span class="hljs-keyword">int</span> length = arr.length;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = length - <span class="hljs-number">1</span>; i &gt; <span class="hljs-number">0</span>; i--) {
+            <span class="hljs-comment">//&#x5C06;&#x5806;&#x9876;&#x5143;&#x7D20;&#x4E0E;&#x672B;&#x4F4D;&#x5143;&#x7D20;&#x8C03;&#x6362;</span>
+            <span class="hljs-keyword">int</span> tmp = arr[<span class="hljs-number">0</span>];
+            arr[<span class="hljs-number">0</span>] = arr[i];
+            arr[i] = tmp;
+            length--; <span class="hljs-comment">//&#x6570;&#x7EC4;&#x957F;&#x5EA6;-1 &#x9690;&#x85CF;&#x5806;&#x5C3E;&#x5143;&#x7D20;</span>
+            heapify(arr, <span class="hljs-number">0</span>, length);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapify</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> length)</span> </span>{
+        <span class="hljs-keyword">int</span> leftChild = <span class="hljs-number">2</span> * index + <span class="hljs-number">1</span>;<span class="hljs-comment">//&#x5DE6;&#x5B50;&#x8282;&#x70B9;&#x4E0B;&#x6807;</span>
+        <span class="hljs-keyword">int</span> rightChild = <span class="hljs-number">2</span> * index + <span class="hljs-number">2</span>;<span class="hljs-comment">//&#x53F3;&#x5B50;&#x8282;&#x70B9;&#x4E0B;&#x6807;</span>
+        <span class="hljs-keyword">int</span> present = index;<span class="hljs-comment">//&#x8981;&#x8C03;&#x6574;&#x7684;&#x8282;&#x70B9;&#x4E0B;&#x6807;</span>
+        <span class="hljs-comment">//&#x8C03;&#x6574;&#x5DE6;&#x8FB9;</span>
+        <span class="hljs-keyword">if</span> (leftChild &lt; length &amp;&amp; arr[leftChild] &gt; arr[present]) {
+            present = leftChild;
+        }
+        <span class="hljs-comment">//&#x8C03;&#x6574;&#x53F3;&#x8FB9;</span>
+        <span class="hljs-keyword">if</span> (rightChild &lt; length &amp;&amp; arr[rightChild] &gt; arr[present]) {
+            present = rightChild;
+        }
+        <span class="hljs-comment">//&#x5982;&#x679C;&#x4E0B;&#x6807;&#x4E0D;&#x76F8;&#x7B49; &#x8BC1;&#x660E;&#x8C03;&#x6362;&#x8FC7;&#x4E86;</span>
+        <span class="hljs-keyword">if</span> (present != index) {
+            <span class="hljs-comment">//&#x4EA4;&#x6362;&#x503C;</span>
+            <span class="hljs-keyword">int</span> temp = arr[index];
+            arr[index] = arr[present];
+            arr[present] = temp;
+            <span class="hljs-comment">//&#x7EE7;&#x7EED;&#x8C03;&#x6574;</span>
+            heapify(arr, present, length);
+        }
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>&#x200B;        int leftChild = 2 <em> index + 1;//&#x5DE6;&#x5B50;&#x8282;&#x70B9;&#x4E0B;&#x6807;
+&#x200B;        int rightChild = 2 </em> index + 2;//&#x53F3;&#x5B50;&#x8282;&#x70B9;&#x4E0B;&#x6807;
+&#x200B;        int present = index;//&#x8981;&#x8C03;&#x6574;&#x7684;&#x8282;&#x70B9;&#x4E0B;&#x6807;
+&#x200B;        //&#x8C03;&#x6574;&#x5DE6;&#x8FB9;
+&#x200B;        if (leftChild &lt; length &amp;&amp; arr[leftChild] &gt; arr[present]) {
+&#x200B;            present = leftChild;
+&#x200B;        }
+&#x200B;        //&#x8C03;&#x6574;&#x53F3;&#x8FB9;
+&#x200B;        if (rightChild &lt; length &amp;&amp; arr[rightChild] &gt; arr[present]) {
+&#x200B;            present = rightChild;
+&#x200B;        }
+&#x200B;        //&#x5982;&#x679C;&#x4E0B;&#x6807;&#x4E0D;&#x76F8;&#x7B49; &#x8BC1;&#x660E;&#x8C03;&#x6362;&#x8FC7;&#x4E86;
+&#x200B;        if (present != index) {
+&#x200B;            //&#x4EA4;&#x6362;&#x503C;
+&#x200B;            int temp = arr[index];
+&#x200B;            arr[index] = arr[present];
+&#x200B;            arr[present] = temp;
+&#x200B;            //&#x7EE7;&#x7EED;&#x8C03;&#x6574;
+&#x200B;            heapify(arr, present, length);
+&#x200B;        }</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(NlgN)
 $$</p>
 </li>
-<li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
+<li><p>&#x7A7A;&#x95F4;&#xFF1A;O(1)</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x4E0D;&#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="counting-sort">Counting sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">package</span> sort;
 
+<span class="hljs-keyword">import</span> java.util.Arrays;
+
+<span class="hljs-comment">/**
+ * &#x8BA1;&#x6570;&#x6392;&#x5E8F;&#x53EA;&#x9002;&#x7528;&#x4E8E;&#x6B63;&#x6574;&#x6570;, &#x5E76;&#x4E14;&#x53D6;&#x503C;&#x8303;&#x56F4;&#x76F8;&#x5DEE;&#x4E0D;&#x5927;&#x7684;&#x6570;&#x7EC4;&#x6392;&#x5E8F;&#x4F7F;&#x7528;&#xFF0C;&#x5B83;&#x7684;&#x6392;&#x5E8F;&#x7684;&#x901F;&#x5EA6;&#x662F;&#x975E;&#x5E38;&#x53EF;&#x89C2;&#x7684;&#x3002;
+ * <span class="hljs-doctag">@author</span> zhaofengyi
+ *
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CoutingSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-comment">//&#x627E;&#x5230;&#x6700;&#x5927;&#x503C;&#x548C;&#x6700;&#x5C0F;&#x503C;</span>
+        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">int</span> minValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (maxValue &lt; value) {
+                maxValue = value;
+            }
+            <span class="hljs-keyword">if</span> (minValue &gt; value) {
+                minValue = value;
+            }
+        }
+        <span class="hljs-comment">//&#x521B;&#x5EFA;&#x8BA1;&#x6570;&#x6570;&#x7EC4;</span>
+        <span class="hljs-keyword">int</span>[] bucket = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[maxValue - minValue + <span class="hljs-number">1</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            bucket[value - minValue]++;
+        }
+        <span class="hljs-keyword">int</span> sortedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; bucket.length; j++) {
+            <span class="hljs-keyword">while</span> (bucket[j] &gt; <span class="hljs-number">0</span>) {
+                arr[sortedIndex++] = j + minValue;
+                bucket[j]--;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>int[] bucket = new int[maxValue - minValue + 1];</p>
+<p>for (int value : arr) {
+    bucket[value - minValue]++;
+}</p>
+<p>while (bucket[j] &gt; 0) {
+    arr[sortedIndex++] = j + minValue;
+    bucket[j]--;
+}</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(N+k)
 $$</p>
 </li>
 <li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="bucket-sort">Bucket sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">package</span> sort;
 
-</code></pre>
+<span class="hljs-keyword">import</span> java.util.Arrays;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BucketSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> bucketSize = <span class="hljs-number">5</span>;
+        <span class="hljs-keyword">if</span> (arr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> arr;
+        }
+        <span class="hljs-keyword">int</span> minValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (value &lt; minValue) {
+                minValue = value;
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value &gt; maxValue) {
+                maxValue = value;
+            }
+        }
+        <span class="hljs-keyword">int</span> bucketCount = (<span class="hljs-keyword">int</span>) Math.floor((maxValue - minValue) / bucketSize) + <span class="hljs-number">1</span>;
+
+        <span class="hljs-comment">/* &#x7528;ArrayList&#x5B9E;&#x73B0;&#x6876; 
+        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; bucketList = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; bucketCount; i++) {
+            bucketList.add(new ArrayList&lt;Integer&gt;());
+        }
+        // &#x5229;&#x7528;&#x6620;&#x5C04;&#x51FD;&#x6570;&#x5C06;&#x6570;&#x636E;&#x5206;&#x914D;&#x5230;&#x5404;&#x4E2A;&#x6876;&#x4E2D;
+        for (int i = 0; i &lt; arr.length; i++) {
+            int index = (int) Math.floor((arr[i] - minValue) / bucketSize); 
+            int originLength = bucketList.get(index).size();
+            int j = originLength;
+            bucketList.get(index).add(arr[i]);
+            while (j &gt; 0 &amp;&amp; arr[i] &lt; bucketList.get(index).get(j - 1)) {
+                int value = bucketList.get(index).get(j - 1);
+                bucketList.get(index).set(j, value);
+                j--;
+            }
+            bucketList.get(index).set(j, arr[i]);
+        }
+        int arrIndex = 0;
+        for (ArrayList&lt;Integer&gt; bucket : bucketList) {
+            if (bucket.size() &lt;= 0) {
+                continue;
+            }
+            for (int value : bucket) {
+                arr[arrIndex++] = value;
+            }
+        }
+
+        <span class="hljs-comment">/* &#x7528;&#x6570;&#x7EC4;&#x5B9E;&#x73B0;&#x9178;&#x5976; */</span>
+        int[][] buckets = new int[bucketCount][0];
+        // &#x5229;&#x7528;&#x6620;&#x5C04;&#x51FD;&#x6570;&#x5C06;&#x6570;&#x636E;&#x5206;&#x914D;&#x5230;&#x5404;&#x4E2A;&#x6876;&#x4E2D;
+        for (int i = 0; i &lt; arr.length; i++) {
+            int index = (int) Math.floor((arr[i] - minValue) / bucketSize); 
+            //&#x81EA;&#x52A8;&#x6269;&#x5BB9;&#xFF0C;&#x5E76;&#x63D2;&#x5165;&#x6392;&#x5E8F;
+            int originLength = buckets[index].length;
+            buckets[index] = Arrays.copyOf(buckets[index], originLength + 1);
+            int j = originLength;
+            while (j &gt; 0 &amp;&amp; arr[i] &lt; buckets[index][j - 1]) {
+                buckets[index][j] = buckets[index][j - 1];
+                j--;
+            }
+            buckets[index][j] = arr[i];
+        }
+        int arrIndex = 0;
+        for (int[] bucket : buckets) {
+            if (bucket.length &lt;= 0) {
+                continue;
+            }
+            for (int value : bucket) {
+                arr[arrIndex++] = value;
+            }
+        }
+
+        return arr;
+    }
+}
+</span></code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
 <blockquote>
+<p>&#x5728;&#x989D;&#x5916;&#x7A7A;&#x95F4;&#x5145;&#x8DB3;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x5C3D;&#x91CF;&#x589E;&#x5927;&#x6876;&#x7684;&#x6570;&#x91CF;&#xFF0C;&#x6781;&#x9650;&#x60C5;&#x51B5;&#x4E0B;&#x6BCF;&#x4E2A;&#x6876;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x65F6;&#xFF0C;&#x6216;&#x8005;&#x662F;&#x6BCF;&#x53EA;&#x6876;&#x53EA;&#x88C5;&#x4E00;&#x4E2A;&#x503C;&#x65F6;&#xFF0C;&#x5B8C;&#x5168;&#x907F;&#x5F00;&#x4E86;&#x6876;&#x5185;&#x6392;&#x5E8F;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x6876;&#x6392;&#x5E8F;&#x7684;&#x6700;&#x597D;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x5C31;&#x80FD;&#x591F;&#x8FBE;&#x5230; O(n)&#x3002;</p>
 </blockquote>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
+O(N+k)
 $$</p>
 </li>
-<li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
+<li><p>&#x7A7A;&#x95F4;&#xFF1A;O(N+k)</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 <h2 id="radix-sort">Radix sort</h2>
-<pre><code class="lang-java">
+<pre><code class="lang-java"><span class="hljs-keyword">package</span> sort;
 
+<span class="hljs-keyword">import</span> java.util.Arrays;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RadixSort</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-comment">// &#x627E;&#x5230;&#x6700;&#x5927;&#x503C;</span>
+        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (value &gt; maxValue) {
+                maxValue = value;
+            }
+        }
+        <span class="hljs-comment">// &#x627E;&#x5230;&#x6700;&#x5927;&#x4F4D;&#x6570;</span>
+        <span class="hljs-keyword">int</span> numLength = <span class="hljs-number">0</span>;
+        do {
+            numLength++;
+            maxValue /= <span class="hljs-number">10</span>;
+        } <span class="hljs-keyword">while</span> (maxValue != <span class="hljs-number">0</span>);
+        <span class="hljs-comment">// &#x5F00;&#x59CB;&#x6392;&#x5E8F;</span>
+        <span class="hljs-keyword">int</span> mod = <span class="hljs-number">10</span>;
+        <span class="hljs-keyword">int</span> dev = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; numLength; i++, dev *= <span class="hljs-number">10</span>, mod *= <span class="hljs-number">10</span>) {
+            <span class="hljs-comment">// &#x8003;&#x8651;&#x8D1F;&#x6570;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x8FD9;&#x91CC;&#x6269;&#x5C55;&#x4E00;&#x500D;&#x961F;&#x5217;&#x6570;&#xFF0C;&#x5176;&#x4E2D; [0-9]&#x5BF9;&#x5E94;&#x8D1F;&#x6570;&#xFF0C;[10-19]&#x5BF9;&#x5E94;&#x6B63;&#x6570; (bucket + 10)</span>
+            <span class="hljs-keyword">int</span>[][] counter = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[mod * <span class="hljs-number">2</span>][<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arr.length; j++) {
+                <span class="hljs-keyword">int</span> bucket = ((arr[j] % mod) / dev) + mod;
+                counter[bucket] = Arrays.copyOf(counter[bucket], counter[bucket].length + <span class="hljs-number">1</span>);
+                counter[bucket][counter[bucket].length - <span class="hljs-number">1</span>] = arr[j];
+            }
+            <span class="hljs-keyword">int</span> pos = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : counter) {
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
+                    arr[pos++] = value;
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
 </code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
-<blockquote>
-</blockquote>
+<pre><code class="lang-java">            <span class="hljs-keyword">int</span>[][] counter = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[mod * <span class="hljs-number">2</span>][<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arr.length; j++) {
+                <span class="hljs-keyword">int</span> bucket = ((arr[j] % mod) / dev) + mod;
+                counter[bucket] = Arrays.copyOf(counter[bucket], counter[bucket].length + <span class="hljs-number">1</span>);
+                counter[bucket][counter[bucket].length - <span class="hljs-number">1</span>] = arr[j];
+            }
+            <span class="hljs-keyword">int</span> pos = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : counter) {
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
+                    arr[pos++] = value;
+                }
+            }
+</code></pre>
 <ul>
 <li><p>&#x65F6;&#x95F4;&#xFF1A;
 $$
-O()
-$$</p>
+O(N<em>k)
+$$
+</em>k&#x662F;&#x6700;&#x5927;&#x503C;&#x7684;&#x4F4D;&#x6570;*</p>
 </li>
-<li><p>&#x7A7A;&#x95F4;&#xFF1A;O()</p>
+<li><p>&#x7A7A;&#x95F4;&#xFF1A;O(N+k)</p>
 </li>
-<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; </p>
+<li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x7A33;&#x5B9A;</p>
 </li>
 </ul>
 
@@ -867,7 +1257,7 @@ $$</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"next":{"title":"Android","level":"2.2","depth":1,"ref":"","articles":[{"title":"Build","level":"2.2.1","depth":2,"ref":"","articles":[{"title":"Android Build System","level":"2.2.1.1","depth":3,"path":"Android/Build/android.build.system.md","ref":"Android/Build/android.build.system.md","articles":[]},{"title":"Porting Apk To 4 4 4","level":"2.2.1.2","depth":3,"path":"Android/Build/porting.apk.to.4.4.4.md","ref":"Android/Build/porting.apk.to.4.4.4.md","articles":[]}]},{"title":"JNI","level":"2.2.2","depth":2,"ref":"","articles":[{"title":"Jni","level":"2.2.2.1","depth":3,"path":"Android/JNI/jni.md","ref":"Android/JNI/jni.md","articles":[]}]},{"title":"WorkExperience","level":"2.2.3","depth":2,"ref":"","articles":[{"title":"Add Custom Libarary","level":"2.2.3.1","depth":3,"path":"Android/WorkExperience/add.custom.libarary.md","ref":"Android/WorkExperience/add.custom.libarary.md","articles":[]},{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},{"title":"Force Landscape","level":"2.2.3.3","depth":3,"path":"Android/WorkExperience/force.landscape.md","ref":"Android/WorkExperience/force.landscape.md","articles":[]}]}]},"previous":{"title":"Sort","level":"2.1.2","depth":2,"ref":"","articles":[{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"path":"Algorithms/Sort/ten.classic.sort.md","ref":"Algorithms/Sort/ten.classic.sort.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Algorithms/Sort/ten.classic.sort.md","mtime":"2019-09-06T12:55:22.386Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-09T10:03:06.279Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"next":{"title":"Android","level":"2.2","depth":1,"ref":"","articles":[{"title":"Build","level":"2.2.1","depth":2,"ref":"","articles":[{"title":"Android Build System","level":"2.2.1.1","depth":3,"path":"Android/Build/android.build.system.md","ref":"Android/Build/android.build.system.md","articles":[]},{"title":"Porting Apk To 4 4 4","level":"2.2.1.2","depth":3,"path":"Android/Build/porting.apk.to.4.4.4.md","ref":"Android/Build/porting.apk.to.4.4.4.md","articles":[]}]},{"title":"JNI","level":"2.2.2","depth":2,"ref":"","articles":[{"title":"Jni","level":"2.2.2.1","depth":3,"path":"Android/JNI/jni.md","ref":"Android/JNI/jni.md","articles":[]}]},{"title":"WorkExperience","level":"2.2.3","depth":2,"ref":"","articles":[{"title":"Add Custom Libarary","level":"2.2.3.1","depth":3,"path":"Android/WorkExperience/add.custom.libarary.md","ref":"Android/WorkExperience/add.custom.libarary.md","articles":[]},{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},{"title":"Force Landscape","level":"2.2.3.3","depth":3,"path":"Android/WorkExperience/force.landscape.md","ref":"Android/WorkExperience/force.landscape.md","articles":[]}]}]},"previous":{"title":"Sort","level":"2.1.2","depth":2,"ref":"","articles":[{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"path":"Algorithms/Sort/ten.classic.sort.md","ref":"Algorithms/Sort/ten.classic.sort.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Algorithms/Sort/ten.classic.sort.md","mtime":"2019-09-22T13:32:59.185Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-22T13:42:28.802Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

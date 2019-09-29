@@ -4,7 +4,7 @@ rm -rf $summaryFile
 tree Algorithms Android Basic_Knowledge CodeManagement Others | while read line
 do
     #echo $line
-    if [ "${line: 0-3}" == "pic" -o "${line: 0-3}" == "png" -o "${line: 0-3}" == "jpg" -o "${line: 0-3}" == "bmp" ]; then
+    if [ "${line: 0-3}" == "pic" -o "${line: 0-3}" == "png" -o "${line: 0-3}" == "jpg" -o "${line: 0-3}" == "bmp" -o "${line: 0-3}" == "JPG" -o "${line: 0-4}" == "webp" ]; then
       continue
     fi
     if [ "$line" == "" ]; then

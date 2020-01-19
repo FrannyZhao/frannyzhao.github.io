@@ -10,17 +10,17 @@
 
 
 
-![image](/Users/zhaofengyi/Documents/gitbook/Algorithms/pic/discrete_sum.png)
+![image](./pic/discrete_sum.png)
 
 
 
-![image](/Users/zhaofengyi/Documents/gitbook/Algorithms/pic/common_cost.png)
+![image](./pic/common_cost.png)
 
-![image](/Users/zhaofengyi/Documents/gitbook/Algorithms/pic/capability.png)
+![image](./pic/capability.png)
 
 Theta, O, Omega, Tilde记号：
 
-![image](/Users/zhaofengyi/Documents/gitbook/Algorithms/pic/notation1.png)
+![image](./pic/notation1.png)
 
 | 记号       | 含义                   |
 | ---------- | ---------------------- |
@@ -30,7 +30,7 @@ Theta, O, Omega, Tilde记号：
 
 误区：把O(N)当做近似模型，应该用 ~ N
 
-![image](/Users/zhaofengyi/Documents/gitbook/Algorithms/pic/notation2.png)
+![image](./pic/notation2.png)
 
 
 

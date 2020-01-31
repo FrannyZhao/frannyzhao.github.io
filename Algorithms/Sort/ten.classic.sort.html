@@ -1126,28 +1126,28 @@ $$</p>
  */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CoutingSort</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
         <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
-        <span class="hljs-comment">//&#x627E;&#x5230;&#x6700;&#x5927;&#x503C;&#x548C;&#x6700;&#x5C0F;&#x503C;</span>
-        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
-        <span class="hljs-keyword">int</span> minValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>];
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
-            <span class="hljs-keyword">if</span> (maxValue &lt; value) {
-                maxValue = value;
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
             }
-            <span class="hljs-keyword">if</span> (minValue &gt; value) {
-                minValue = value;
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
             }
         }
-        <span class="hljs-comment">//&#x521B;&#x5EFA;&#x8BA1;&#x6570;&#x6570;&#x7EC4;</span>
-        <span class="hljs-keyword">int</span>[] bucket = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[maxValue - minValue + <span class="hljs-number">1</span>];
+        <span class="hljs-keyword">int</span>[] bucket = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[max - min + <span class="hljs-number">1</span>];
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
-            bucket[value - minValue]++;
+            bucket[value - min]++;
         }
         <span class="hljs-keyword">int</span> sortedIndex = <span class="hljs-number">0</span>;
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; bucket.length; j++) {
-            <span class="hljs-keyword">while</span> (bucket[j] &gt; <span class="hljs-number">0</span>) {
-                arr[sortedIndex++] = j + minValue;
-                bucket[j]--;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; bucket.length; i++) {
+            <span class="hljs-keyword">while</span> (bucket[i] &gt; <span class="hljs-number">0</span>) {
+                arr[sortedIndex++] = i + min;
+                bucket[i]--;
             }
         }
         <span class="hljs-keyword">return</span> arr;
@@ -1185,79 +1185,44 @@ $$</p>
 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BucketSort</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
         <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
-        <span class="hljs-keyword">int</span> bucketSize = <span class="hljs-number">5</span>;
-        <span class="hljs-keyword">if</span> (arr.length == <span class="hljs-number">0</span>) {
-            <span class="hljs-keyword">return</span> arr;
-        }
-        <span class="hljs-keyword">int</span> minValue = arr[<span class="hljs-number">0</span>];
-        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>], bucketSize = <span class="hljs-number">5</span>;
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
-            <span class="hljs-keyword">if</span> (value &lt; minValue) {
-                minValue = value;
-            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value &gt; maxValue) {
-                maxValue = value;
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
+            }
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
             }
         }
-        <span class="hljs-keyword">int</span> bucketCount = (<span class="hljs-keyword">int</span>) Math.floor((maxValue - minValue) / bucketSize) + <span class="hljs-number">1</span>;
-
-        <span class="hljs-comment">/* &#x7528;ArrayList&#x5B9E;&#x73B0;&#x6876; 
-        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; bucketList = new ArrayList&lt;&gt;();
-        for (int i = 0; i &lt; bucketCount; i++) {
-            bucketList.add(new ArrayList&lt;Integer&gt;());
-        }
-        // &#x5229;&#x7528;&#x6620;&#x5C04;&#x51FD;&#x6570;&#x5C06;&#x6570;&#x636E;&#x5206;&#x914D;&#x5230;&#x5404;&#x4E2A;&#x6876;&#x4E2D;
-        for (int i = 0; i &lt; arr.length; i++) {
-            int index = (int) Math.floor((arr[i] - minValue) / bucketSize); 
-            int originLength = bucketList.get(index).size();
-            int j = originLength;
-            bucketList.get(index).add(arr[i]);
-            while (j &gt; 0 &amp;&amp; arr[i] &lt; bucketList.get(index).get(j - 1)) {
-                int value = bucketList.get(index).get(j - 1);
-                bucketList.get(index).set(j, value);
-                j--;
+        <span class="hljs-keyword">int</span> bucketCount = (<span class="hljs-keyword">int</span>) Math.floor((max - min) / bucketSize) + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">int</span>[][] buckets = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[bucketCount][<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">int</span> index = (<span class="hljs-keyword">int</span>) Math.floor((value - min) / bucketSize);
+            buckets[index] = Arrays.copyOf(buckets[index], buckets[index].length + <span class="hljs-number">1</span>);
+            <span class="hljs-keyword">int</span> i = buckets[index].length - <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">while</span> (i &gt; <span class="hljs-number">0</span> &amp;&amp; value &lt; buckets[index][i - <span class="hljs-number">1</span>]) {
+                buckets[index][i] = buckets[index][i - <span class="hljs-number">1</span>];
+                i--;
             }
-            bucketList.get(index).set(j, arr[i]);
+            buckets[index][i] = value;
         }
-        int arrIndex = 0;
-        for (ArrayList&lt;Integer&gt; bucket : bucketList) {
-            if (bucket.size() &lt;= 0) {
-                continue;
+        <span class="hljs-keyword">int</span> sortedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : buckets) {
+            <span class="hljs-keyword">if</span> (bucket.length == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">continue</span>;
             }
-            for (int value : bucket) {
-                arr[arrIndex++] = value;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
+                arr[sortedIndex++] = value;
             }
         }
-
-        <span class="hljs-comment">/* &#x7528;&#x6570;&#x7EC4;&#x5B9E;&#x73B0;&#x9178;&#x5976; */</span>
-        int[][] buckets = new int[bucketCount][0];
-        // &#x5229;&#x7528;&#x6620;&#x5C04;&#x51FD;&#x6570;&#x5C06;&#x6570;&#x636E;&#x5206;&#x914D;&#x5230;&#x5404;&#x4E2A;&#x6876;&#x4E2D;
-        for (int i = 0; i &lt; arr.length; i++) {
-            int index = (int) Math.floor((arr[i] - minValue) / bucketSize); 
-            //&#x81EA;&#x52A8;&#x6269;&#x5BB9;&#xFF0C;&#x5E76;&#x63D2;&#x5165;&#x6392;&#x5E8F;
-            int originLength = buckets[index].length;
-            buckets[index] = Arrays.copyOf(buckets[index], originLength + 1);
-            int j = originLength;
-            while (j &gt; 0 &amp;&amp; arr[i] &lt; buckets[index][j - 1]) {
-                buckets[index][j] = buckets[index][j - 1];
-                j--;
-            }
-            buckets[index][j] = arr[i];
-        }
-        int arrIndex = 0;
-        for (int[] bucket : buckets) {
-            if (bucket.length &lt;= 0) {
-                continue;
-            }
-            for (int value : bucket) {
-                arr[arrIndex++] = value;
-            }
-        }
-
-        return arr;
+        <span class="hljs-keyword">return</span> arr;
     }
 }
-</span></code></pre>
+</code></pre>
 <ul>
 <li>&#x91CD;&#x70B9;</li>
 </ul>
@@ -1282,33 +1247,40 @@ $$</p>
 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RadixSort</span> </span>{
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
         <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
-        <span class="hljs-comment">// &#x627E;&#x5230;&#x6700;&#x5927;&#x503C;</span>
-        <span class="hljs-keyword">int</span> maxValue = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>];
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
-            <span class="hljs-keyword">if</span> (value &gt; maxValue) {
-                maxValue = value;
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
+            }
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
             }
         }
-        <span class="hljs-comment">// &#x627E;&#x5230;&#x6700;&#x5927;&#x4F4D;&#x6570;</span>
-        <span class="hljs-keyword">int</span> numLength = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (min &lt; <span class="hljs-number">0</span>) {
+            min = - min;
+            <span class="hljs-keyword">if</span> (min &gt; max) {
+                max = min;
+            }
+        }
+        <span class="hljs-keyword">int</span> maxNumLen = <span class="hljs-number">0</span>;
         do {
-            numLength++;
-            maxValue /= <span class="hljs-number">10</span>;
-        } <span class="hljs-keyword">while</span> (maxValue != <span class="hljs-number">0</span>);
-        <span class="hljs-comment">// &#x5F00;&#x59CB;&#x6392;&#x5E8F;</span>
-        <span class="hljs-keyword">int</span> mod = <span class="hljs-number">10</span>;
-        <span class="hljs-keyword">int</span> dev = <span class="hljs-number">1</span>;
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; numLength; i++, dev *= <span class="hljs-number">10</span>, mod *= <span class="hljs-number">10</span>) {
-            <span class="hljs-comment">// &#x8003;&#x8651;&#x8D1F;&#x6570;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x8FD9;&#x91CC;&#x6269;&#x5C55;&#x4E00;&#x500D;&#x961F;&#x5217;&#x6570;&#xFF0C;&#x5176;&#x4E2D; [0-9]&#x5BF9;&#x5E94;&#x8D1F;&#x6570;&#xFF0C;[10-19]&#x5BF9;&#x5E94;&#x6B63;&#x6570; (bucket + 10)</span>
-            <span class="hljs-keyword">int</span>[][] counter = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[mod * <span class="hljs-number">2</span>][<span class="hljs-number">0</span>];
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arr.length; j++) {
-                <span class="hljs-keyword">int</span> bucket = ((arr[j] % mod) / dev) + mod;
-                counter[bucket] = Arrays.copyOf(counter[bucket], counter[bucket].length + <span class="hljs-number">1</span>);
-                counter[bucket][counter[bucket].length - <span class="hljs-number">1</span>] = arr[j];
+            max = max / <span class="hljs-number">10</span>;
+            maxNumLen ++;
+        } <span class="hljs-keyword">while</span> (max &gt; <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">int</span> mod = <span class="hljs-number">10</span>, dev = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; maxNumLen; i++, dev *= <span class="hljs-number">10</span>) {
+            <span class="hljs-keyword">int</span>[][] buckets = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">20</span>][<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+                <span class="hljs-keyword">int</span> index = value / dev % mod + <span class="hljs-number">10</span>;
+                buckets[index] = Arrays.copyOf(buckets[index], buckets[index].length + <span class="hljs-number">1</span>);
+                buckets[index][buckets[index].length - <span class="hljs-number">1</span>] = value;
             }
             <span class="hljs-keyword">int</span> pos = <span class="hljs-number">0</span>;
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : counter) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : buckets) {
                 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
                     arr[pos++] = value;
                 }
@@ -1346,6 +1318,324 @@ $$
 <li><p>&#x7A33;&#x5B9A;&#x6027;&#xFF1A; &#x7A33;&#x5B9A;</p>
 </li>
 </ul>
+<h2 id="summary">Summary</h2>
+<pre><code class="lang-java"><span class="hljs-keyword">package</span> sort;
+
+<span class="hljs-keyword">import</span> java.util.Arrays;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TenClassicSorts</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] bubbleSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">boolean</span> hasChanged;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = arr.length - <span class="hljs-number">1</span>; i &gt; <span class="hljs-number">0</span>; i--) {
+            hasChanged = <span class="hljs-keyword">false</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; i; j++) {
+                <span class="hljs-keyword">if</span> (arr[j] &gt; arr[j + <span class="hljs-number">1</span>]) {
+                    tmp = arr[j];
+                    arr[j] = arr[j + <span class="hljs-number">1</span>];
+                    arr[j + <span class="hljs-number">1</span>] = tmp;
+                    hasChanged = <span class="hljs-keyword">true</span>;
+                }
+            }
+            <span class="hljs-keyword">if</span> (!hasChanged) {
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] selectionSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> tmp, min;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) {
+            min = i;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = i + <span class="hljs-number">1</span>; j &lt; arr.length; j++) {
+                <span class="hljs-keyword">if</span> (arr[j] &lt; arr[min]) {
+                    min = j;
+                }
+            }
+            <span class="hljs-keyword">if</span> (min != i) {
+                tmp = arr[i];
+                arr[i] = arr[min];
+                arr[min] = tmp;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] insertSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> tmp, j;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; arr.length; i++) {
+            j = i;
+            tmp = arr[i];
+            <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; tmp &lt; arr[j - <span class="hljs-number">1</span>]) {
+                arr[j] = arr[j - <span class="hljs-number">1</span>];
+                j--;
+            }
+            arr[j] = tmp;
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] shellSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> gap = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (gap &lt; arr.length) {
+            gap = gap * <span class="hljs-number">3</span> + <span class="hljs-number">1</span>;
+        }
+        <span class="hljs-keyword">int</span> tmp, j;
+        <span class="hljs-keyword">while</span> (gap &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = gap; i &lt; arr.length; i+=gap) {
+                j = i;
+                tmp = arr[i];
+                <span class="hljs-keyword">while</span> (j &gt;= gap &amp;&amp; tmp &lt; arr[j - gap]) {
+                    arr[j] = arr[j - gap];
+                    j-=gap;
+                }
+                arr[j] = tmp;
+            }
+            gap = (<span class="hljs-keyword">int</span>) Math.floor(gap / <span class="hljs-number">3</span>);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] quickSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">return</span> quick(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] quick(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end) {
+        <span class="hljs-keyword">if</span> (start &lt; end) {
+<span class="hljs-comment">//            int pivot = partitionS(arr, start, end);</span>
+            <span class="hljs-keyword">int</span> pivot = partitionD(arr, start, end);
+            quick(arr, start, pivot - <span class="hljs-number">1</span>);
+            quick(arr, pivot + <span class="hljs-number">1</span>, end);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partitionS</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end)</span> </span>{
+        <span class="hljs-keyword">int</span> mark = start;
+        <span class="hljs-keyword">int</span> pivotValue = arr[start];
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = mark + <span class="hljs-number">1</span>; i &lt;= end; i++) {
+            <span class="hljs-keyword">if</span> (arr[i] &lt; pivotValue) {
+                mark ++;
+                <span class="hljs-keyword">if</span> (mark != i) {
+                    tmp = arr[mark];
+                    arr[mark] = arr[i];
+                    arr[i] = tmp;
+                }
+            }
+        }
+        <span class="hljs-keyword">if</span> (mark != start) {
+            arr[start] = arr[mark];
+            arr[mark] = pivotValue;
+        }
+        <span class="hljs-keyword">return</span> mark;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partitionD</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> start, <span class="hljs-keyword">int</span> end)</span> </span>{
+        <span class="hljs-keyword">int</span> left = start, right = end, pivotValue = arr[start], tmp;
+        <span class="hljs-keyword">while</span> (left &lt; right) {
+            <span class="hljs-keyword">while</span> (left &lt; right &amp;&amp; arr[right] &gt;= pivotValue) {
+                right --;
+            }
+            <span class="hljs-keyword">while</span> (left &lt; right &amp;&amp; arr[left] &lt;= pivotValue) {
+                left ++;
+            }
+            <span class="hljs-keyword">if</span> (left &lt; right) {
+                tmp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = tmp;
+            }
+        }
+        arr[start] = arr[left];
+        arr[left] = pivotValue;
+        <span class="hljs-keyword">return</span> left;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] mergeSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length &lt; <span class="hljs-number">2</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> mid = (<span class="hljs-keyword">int</span>) Math.floor(arr.length / <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">int</span>[] left = Arrays.copyOfRange(arr, <span class="hljs-number">0</span>, mid);
+        <span class="hljs-keyword">int</span>[] right = Arrays.copyOfRange(arr, mid, arr.length);
+        <span class="hljs-keyword">return</span> merge(mergeSort(left), mergeSort(right));
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] merge(<span class="hljs-keyword">int</span>[] left, <span class="hljs-keyword">int</span>[] right) {
+        <span class="hljs-keyword">int</span>[] result =  <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[left.length + right.length];
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>, k = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (i &lt; left.length &amp;&amp; j &lt; right.length) {
+            <span class="hljs-keyword">if</span> (left[i] &lt; right[j]) {
+                result[k++] = left[i++];
+            } <span class="hljs-keyword">else</span> {
+                result[k++] = right[j++];
+            }
+        }
+        <span class="hljs-keyword">while</span> (i &lt; left.length) {
+            result[k++] = left[i++];
+        }
+        <span class="hljs-keyword">while</span> (j &lt; right.length) {
+            result[k++] = right[j++];
+        }
+        <span class="hljs-keyword">return</span> result;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] heapSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = (<span class="hljs-keyword">int</span>) Math.floor(arr.length / <span class="hljs-number">2</span>); i &gt;= <span class="hljs-number">0</span>; i--) {
+            heapify(arr, i, arr.length);
+        }
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">int</span> length = arr.length;
+        <span class="hljs-keyword">while</span> (length &gt; <span class="hljs-number">0</span>) {
+            tmp = arr[<span class="hljs-number">0</span>];
+            arr[<span class="hljs-number">0</span>] = arr[length - <span class="hljs-number">1</span>];
+            arr[length - <span class="hljs-number">1</span>] = tmp;
+            length --;
+            heapify(arr, <span class="hljs-number">0</span>, length);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapify</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> length)</span> </span>{
+        <span class="hljs-keyword">int</span> leftChild = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">int</span> rightChild = index * <span class="hljs-number">2</span> + <span class="hljs-number">2</span>;
+        <span class="hljs-keyword">int</span> present = index;
+        <span class="hljs-keyword">int</span> tmp;
+        <span class="hljs-keyword">if</span> (leftChild &lt; length &amp;&amp; arr[leftChild] &gt; arr[present]) {
+            present = leftChild;
+        }
+        <span class="hljs-keyword">if</span> (rightChild &lt; length &amp;&amp; arr[rightChild] &gt; arr[present]) {
+            present = rightChild;
+        }
+        <span class="hljs-keyword">if</span> (present != index) {
+            tmp = arr[present];
+            arr[present] = arr[index];
+            arr[index] = tmp;
+            heapify(arr, present, length);
+        }
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] countSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
+            }
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
+            }
+        }
+        <span class="hljs-keyword">int</span>[] bucket = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[max - min + <span class="hljs-number">1</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            bucket[value - min]++;
+        }
+        <span class="hljs-keyword">int</span> sortedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; bucket.length; i++) {
+            <span class="hljs-keyword">while</span> (bucket[i] &gt; <span class="hljs-number">0</span>) {
+                arr[sortedIndex++] = i + min;
+                bucket[i]--;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] bucketSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>], bucketSize = <span class="hljs-number">5</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
+            }
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
+            }
+        }
+        <span class="hljs-keyword">int</span> bucketCount = (<span class="hljs-keyword">int</span>) Math.floor((max - min) / bucketSize) + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">int</span>[][] buckets = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[bucketCount][<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">int</span> index = (<span class="hljs-keyword">int</span>) Math.floor((value - min) / bucketSize);
+            buckets[index] = Arrays.copyOf(buckets[index], buckets[index].length + <span class="hljs-number">1</span>);
+            <span class="hljs-keyword">int</span> i = buckets[index].length - <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">while</span> (i &gt; <span class="hljs-number">0</span> &amp;&amp; value &lt; buckets[index][i - <span class="hljs-number">1</span>]) {
+                buckets[index][i] = buckets[index][i - <span class="hljs-number">1</span>];
+                i--;
+            }
+            buckets[index][i] = value;
+        }
+        <span class="hljs-keyword">int</span> sortedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : buckets) {
+            <span class="hljs-keyword">if</span> (bucket.length == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">continue</span>;
+            }
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
+                arr[sortedIndex++] = value;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] radixSort(<span class="hljs-keyword">int</span>[] srcArr) {
+        <span class="hljs-keyword">if</span> (srcArr.length == <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> srcArr;
+        }
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(srcArr, srcArr.length);
+        <span class="hljs-keyword">int</span> max = arr[<span class="hljs-number">0</span>], min = arr[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+            <span class="hljs-keyword">if</span> (value &gt; max) {
+                max = value;
+            }
+            <span class="hljs-keyword">if</span> (value &lt; min) {
+                min = value;
+            }
+        }
+        <span class="hljs-keyword">if</span> (min &lt; <span class="hljs-number">0</span>) {
+            min = - min;
+            <span class="hljs-keyword">if</span> (min &gt; max) {
+                max = min;
+            }
+        }
+        <span class="hljs-keyword">int</span> maxNumLen = <span class="hljs-number">0</span>;
+        do {
+            max = max / <span class="hljs-number">10</span>;
+            maxNumLen ++;
+        } <span class="hljs-keyword">while</span> (max &gt; <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">int</span> mod = <span class="hljs-number">10</span>, dev = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; maxNumLen; i++, dev *= <span class="hljs-number">10</span>) {
+            <span class="hljs-keyword">int</span>[][] buckets = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">20</span>][<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : arr) {
+                <span class="hljs-keyword">int</span> index = value / dev % mod + <span class="hljs-number">10</span>;
+                buckets[index] = Arrays.copyOf(buckets[index], buckets[index].length + <span class="hljs-number">1</span>);
+                buckets[index][buckets[index].length - <span class="hljs-number">1</span>] = value;
+            }
+            <span class="hljs-keyword">int</span> pos = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] bucket : buckets) {
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> value : bucket) {
+                    arr[pos++] = value;
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
+</code></pre>
 
                                 
                                 </section>
@@ -1381,7 +1671,7 @@ $$
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"next":{"title":"Android","level":"2.2","depth":1,"ref":"","articles":[{"title":"Build","level":"2.2.1","depth":2,"ref":"","articles":[{"title":"Android Build System","level":"2.2.1.1","depth":3,"path":"Android/Build/android.build.system.md","ref":"Android/Build/android.build.system.md","articles":[]},{"title":"Porting Apk To 4 4 4","level":"2.2.1.2","depth":3,"path":"Android/Build/porting.apk.to.4.4.4.md","ref":"Android/Build/porting.apk.to.4.4.4.md","articles":[]}]},{"title":"JNI","level":"2.2.2","depth":2,"ref":"","articles":[{"title":"Jni","level":"2.2.2.1","depth":3,"path":"Android/JNI/jni.md","ref":"Android/JNI/jni.md","articles":[]}]},{"title":"WorkExperience","level":"2.2.3","depth":2,"ref":"","articles":[{"title":"Add Custom Libarary","level":"2.2.3.1","depth":3,"path":"Android/WorkExperience/add.custom.libarary.md","ref":"Android/WorkExperience/add.custom.libarary.md","articles":[]},{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},{"title":"Aosp Modify","level":"2.2.3.3","depth":3,"path":"Android/WorkExperience/aosp.modify.md","ref":"Android/WorkExperience/aosp.modify.md","articles":[]},{"title":"Content Provider","level":"2.2.3.4","depth":3,"path":"Android/WorkExperience/content.provider.md","ref":"Android/WorkExperience/content.provider.md","articles":[]},{"title":"Force Landscape","level":"2.2.3.5","depth":3,"path":"Android/WorkExperience/force.landscape.md","ref":"Android/WorkExperience/force.landscape.md","articles":[]},{"title":"Gridlayout Height","level":"2.2.3.6","depth":3,"path":"Android/WorkExperience/gridlayout.height.md","ref":"Android/WorkExperience/gridlayout.height.md","articles":[]},{"title":"Hidden Api","level":"2.2.3.7","depth":3,"path":"Android/WorkExperience/hidden.api.md","ref":"Android/WorkExperience/hidden.api.md","articles":[]},{"title":"Launcher","level":"2.2.3.8","depth":3,"path":"Android/WorkExperience/launcher.md","ref":"Android/WorkExperience/launcher.md","articles":[]},{"title":"Longer Build Finger Print","level":"2.2.3.9","depth":3,"path":"Android/WorkExperience/longer.build.finger.print.md","ref":"Android/WorkExperience/longer.build.finger.print.md","articles":[]},{"title":"Set Default IME","level":"2.2.3.10","depth":3,"path":"Android/WorkExperience/set.default.IME.md","ref":"Android/WorkExperience/set.default.IME.md","articles":[]}]}]},"previous":{"title":"Sort","level":"2.1.2","depth":2,"ref":"","articles":[{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"path":"Algorithms/Sort/ten.classic.sort.md","ref":"Algorithms/Sort/ten.classic.sort.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Algorithms/Sort/ten.classic.sort.md","mtime":"2019-09-29T12:08:01.141Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-19T11:40:54.090Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"next":{"title":"Android","level":"2.2","depth":1,"ref":"","articles":[{"title":"Build","level":"2.2.1","depth":2,"ref":"","articles":[{"title":"Android Build System","level":"2.2.1.1","depth":3,"path":"Android/Build/android.build.system.md","ref":"Android/Build/android.build.system.md","articles":[]},{"title":"Porting Apk To 4 4 4","level":"2.2.1.2","depth":3,"path":"Android/Build/porting.apk.to.4.4.4.md","ref":"Android/Build/porting.apk.to.4.4.4.md","articles":[]}]},{"title":"JNI","level":"2.2.2","depth":2,"ref":"","articles":[{"title":"Jni","level":"2.2.2.1","depth":3,"path":"Android/JNI/jni.md","ref":"Android/JNI/jni.md","articles":[]}]},{"title":"WorkExperience","level":"2.2.3","depth":2,"ref":"","articles":[{"title":"Add Custom Libarary","level":"2.2.3.1","depth":3,"path":"Android/WorkExperience/add.custom.libarary.md","ref":"Android/WorkExperience/add.custom.libarary.md","articles":[]},{"title":"Android Adatper","level":"2.2.3.2","depth":3,"path":"Android/WorkExperience/android.adatper.md","ref":"Android/WorkExperience/android.adatper.md","articles":[]},{"title":"Aosp Modify","level":"2.2.3.3","depth":3,"path":"Android/WorkExperience/aosp.modify.md","ref":"Android/WorkExperience/aosp.modify.md","articles":[]},{"title":"Content Provider","level":"2.2.3.4","depth":3,"path":"Android/WorkExperience/content.provider.md","ref":"Android/WorkExperience/content.provider.md","articles":[]},{"title":"Force Landscape","level":"2.2.3.5","depth":3,"path":"Android/WorkExperience/force.landscape.md","ref":"Android/WorkExperience/force.landscape.md","articles":[]},{"title":"Gridlayout Height","level":"2.2.3.6","depth":3,"path":"Android/WorkExperience/gridlayout.height.md","ref":"Android/WorkExperience/gridlayout.height.md","articles":[]},{"title":"Hidden Api","level":"2.2.3.7","depth":3,"path":"Android/WorkExperience/hidden.api.md","ref":"Android/WorkExperience/hidden.api.md","articles":[]},{"title":"Launcher","level":"2.2.3.8","depth":3,"path":"Android/WorkExperience/launcher.md","ref":"Android/WorkExperience/launcher.md","articles":[]},{"title":"Longer Build Finger Print","level":"2.2.3.9","depth":3,"path":"Android/WorkExperience/longer.build.finger.print.md","ref":"Android/WorkExperience/longer.build.finger.print.md","articles":[]},{"title":"Set Default IME","level":"2.2.3.10","depth":3,"path":"Android/WorkExperience/set.default.IME.md","ref":"Android/WorkExperience/set.default.IME.md","articles":[]}]}]},"previous":{"title":"Sort","level":"2.1.2","depth":2,"ref":"","articles":[{"title":"Ten Classic Sort","level":"2.1.2.1","depth":3,"path":"Algorithms/Sort/ten.classic.sort.md","ref":"Algorithms/Sort/ten.classic.sort.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["page-toc","flow","pageview-count","back-to-top-button","advanced-emoji","pageview-count","splitter","github","code","auto-scroll-table","-lunr","-search","search-pro"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/FrannyZhao"},"splitter":{},"search-pro":{},"page-toc":{"position":"before-first","selector":".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4","showByDefault":true},"auto-scroll-table":{},"code":{"copyButtons":true},"flow":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"back-to-top-button":{},"pageview-count":{},"advanced-emoji":{"embedEmojis":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"Franny Zhao","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Franny's Notebook","language":"zh-hans","gitbook":"*","description":"日常学习笔记"},"file":{"path":"Algorithms/Sort/ten.classic.sort.md","mtime":"2020-01-31T13:55:16.309Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-31T13:58:09.451Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>
